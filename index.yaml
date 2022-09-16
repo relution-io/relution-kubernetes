@@ -3,6 +3,16 @@ entries:
   relution:
   - apiVersion: v2
     appVersion: 5.12.1
+    created: "2022-09-16T05:57:48.19002954Z"
+    description: Install Relution in your Kubernetes cluster using Helm.
+    digest: a1bef3d031bb53c7441d070f5467b665cab72cbbf95dcdcf8d8eca3554d2852d
+    name: relution
+    type: application
+    urls:
+    - https://github.com/relution-io/relution-kubernetes/releases/download/relution-0.0.3/relution-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v2
+    appVersion: 5.12.1
     created: "2022-09-16T03:59:40.001235244Z"
     description: Install Relution in your Kubernetes cluster using Helm.
     digest: 356f14a61324ffdbc6d26f25c351c7731ff5216408b6c3c7f9e6328c37208a73
@@ -21,4 +31,4 @@ entries:
     urls:
     - https://github.com/relution-io/relution-kubernetes/releases/download/relution-0.0.1/relution-0.0.1.tgz
     version: 0.0.1
-generated: "2022-09-16T03:59:40.001257545Z"
+generated: "2022-09-16T05:57:48.19005114Z"
