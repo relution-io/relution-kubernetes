@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  relution:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2022-09-16T03:04:13.613261675Z"
+    description: A Helm chart for Kubernetes
+    digest: 468da5dab6972e448384b64463f66e398ab9fe73d0681bf98bcb8414b186f51a
+    name: relution
+    type: application
+    urls:
+    - https://github.com/relution-io/relution-kubernetes/releases/download/relution-0.0.1/relution-0.0.1.tgz
+    version: 0.0.1
+generated: "2022-09-16T03:04:13.613268075Z"
