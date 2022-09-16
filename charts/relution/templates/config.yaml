@@ -1,0 +1,11 @@
+{{- if .Values.relution.config }}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "relution.fullname" . }}-config
+  labels:
+    {{- include "relution.labels" . | nindent 4 }}
+data:
+  application.yml: |
+    {{- toYaml .Values.relution.config | nindent 4 }}
+{{- end }}

@@ -13,8 +13,17 @@ spec:
       {{- include "relution.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        {{- if .Values.relution.config }}
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        {{- end }}
+        {{- if .Values.relution.environment }}
+        checksum/environment: {{ include (print $.Template.BasePath "/environment.yaml") . | sha256sum }}
+        {{- end }}
+        {{- if .Values.relution.secrets }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        {{- end }}
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
@@ -33,6 +42,21 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: config
+              mountPath: /opt/relution/application.yml
+              subPath: application.yml
+          {{- if or .Values.relution.environment .Values.relution.secrets }}
+          envFrom:
+            {{- if .Values.relution.environment }}
+            - configMapRef:
+                name: {{ include "relution.fullname" . }}-environment
+            {{- end }}
+            {{- if .Values.relution.secrets }}
+            - secretRef:
+                name: {{ include "relution.fullname" . }}-secrets
+            {{- end }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 8080
@@ -47,6 +71,12 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      {{- if .Values.relution.config }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "relution.fullname" . }}-config
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
