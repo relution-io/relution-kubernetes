@@ -4,6 +4,6 @@ description: Install Relution in your Kubernetes cluster using Helm.
 
 type: application
 
-version: 0.0.2
+version: 0.0.3
 
 appVersion: "5.12.1"
