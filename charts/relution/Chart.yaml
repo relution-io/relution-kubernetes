@@ -1,9 +1,10 @@
 apiVersion: v2
 name: relution
 description: Install Relution in your Kubernetes cluster using Helm.
+icon: https://relution.io/icons/icon-512x512.png
 
 type: application
 
-version: 0.0.5
+version: 0.0.6
 
 appVersion: "5.12.1"
