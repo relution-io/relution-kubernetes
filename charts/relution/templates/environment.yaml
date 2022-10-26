@@ -7,6 +7,6 @@ metadata:
     {{- include "relution.labels" . | nindent 4 }}
 data:
   {{- range $key, $val := .Values.relution.environment }}
-  {{ $key }}: {{ $val }}
+  {{ $key }}: {{ $val | quote }}
   {{ end -}}
 {{- end }}
