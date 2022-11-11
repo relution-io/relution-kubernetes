@@ -23,6 +23,8 @@ spec:
         {{- if .Values.relution.secrets }}
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
         {{- end }}
+        prometheus.io/port: "8099"
+        prometheus.io/path: "/actuator/prometheus"
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
