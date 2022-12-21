@@ -64,20 +64,23 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+            - name: monitoring
+              containerPort: 8099
+              protocol: TCP
           startupProbe:
             httpGet:
               path: /actuator/health
-              port: http
+              port: monitoring
             failureThreshold: {{ .Values.startupProbe.failureThreshold | default 30 }}
             periodSeconds: {{ .Values.startupProbe.periodSeconds | default 10 }}
           livenessProbe:
             httpGet:
-              path: /actuator/health
-              port: http
+              path: /actuator/health/liveness
+              port: monitoring
           readinessProbe:
             httpGet:
-              path: /actuator/health
-              port: http
+              path: /actuator/health/readiness
+              port: monitoring
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- if .Values.relution.config }}
