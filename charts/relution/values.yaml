@@ -61,8 +61,8 @@ relution:
   secrets: {}
   existingSecretRefs: []
 
-# MySQL is provided as a dependency to enable quick debugging. We recommend deploying Relution on a dedicated database cluster.
-mysql:
+# MariaDB is provided as a dependency to enable quick debugging. We recommend deploying Relution on a dedicated database cluster.
+mariadb:
   enabled: false
   auth:
     # Please change these passwords before deploying Relution.
