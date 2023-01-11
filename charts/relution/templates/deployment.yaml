@@ -45,10 +45,12 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.relution.config }}
           volumeMounts:
             - name: config
               mountPath: /opt/relution/application.yml
               subPath: application.yml
+          {{- end }}
           {{- if or .Values.relution.environment .Values.relution.secrets }}
           envFrom:
             {{- if .Values.relution.environment }}
