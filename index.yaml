@@ -3,6 +3,22 @@ entries:
   relution:
   - apiVersion: v2
     appVersion: 5.14.1
+    created: "2023-01-11T06:57:27.460978035Z"
+    dependencies:
+    - condition: mysql.enabled
+      name: mysql
+      repository: https://charts.bitnami.com/bitnami
+      version: 9.4.6
+    description: Install Relution in your Kubernetes cluster using Helm.
+    digest: 77b6348683f488c1e579173197a135e5ff57ef4854af249ab1b73cc808843510
+    icon: https://relution.io/icons/icon-512x512.png
+    name: relution
+    type: application
+    urls:
+    - https://github.com/relution-io/relution-kubernetes/releases/download/relution-1.1.0/relution-1.1.0.tgz
+    version: 1.1.0
+  - apiVersion: v2
+    appVersion: 5.14.1
     created: "2023-01-11T04:38:35.54682897Z"
     dependencies:
     - condition: mysql.enabled
@@ -133,4 +149,4 @@ entries:
     urls:
     - https://github.com/relution-io/relution-kubernetes/releases/download/relution-0.0.1/relution-0.0.1.tgz
     version: 0.0.1
-generated: "2023-01-11T04:38:35.547051983Z"
+generated: "2023-01-11T06:57:27.461047337Z"
