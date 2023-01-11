@@ -68,6 +68,10 @@ spec:
                 name: {{ include "relution.fullname" . }}-secrets
             {{- end }}
           {{- end }}
+          {{- if .Values.relution.existingSecretRefs }}
+          env:
+            {{- toYaml .Values.relution.existingSecretRefs | nindent 12 }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 8080
