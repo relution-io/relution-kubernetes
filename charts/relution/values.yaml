@@ -61,6 +61,9 @@ relution:
   secrets: {}
   existingSecretRefs: []
 
+additionalVolumes: []
+additionalVolumeMounts: []
+
 # The heap dump exporter sidecar is intended to be used for debugging. It will monitor the /opt/relution/log directory (customizable) and copy new files to a S3 bucket so they can be further inspected by our development team.
 heapDumpExporter:
   enabled: false
