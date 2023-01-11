@@ -45,7 +45,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if or .Values.relution.config .Values.heapDumpExporter.enabled }}
+          {{- if or (or .Values.relution.config .Values.heapDumpExporter.enabled) .Values.additionalVolumeMounts }}
           volumeMounts:
           {{- if .Values.relution.config }}
             - name: config
@@ -55,6 +55,9 @@ spec:
           {{- if .Values.heapDumpExporter.enabled }}
             - name: heap-dumps
               mountPath: {{ .Values.heapDumpExporter.directory }}
+          {{- end }}
+          {{- if .Values.additionalVolumeMounts }}
+            {{- toYaml .Values.additionalVolumeMounts | nindent 12 }}
           {{- end }}
           {{- end }}
           {{- if or .Values.relution.environment .Values.relution.secrets }}
@@ -115,7 +118,7 @@ spec:
             - name: heap-dumps
               mountPath: {{ .Values.heapDumpExporter.directory }}
         {{- end }}
-      {{- if or .Values.relution.config .Values.heapDumpExporter.enabled }}
+      {{- if or (or .Values.relution.config .Values.heapDumpExporter.enabled) .Values.additionalVolumes }}
       volumes:
       {{- if .Values.relution.config }}
         - name: config
@@ -125,6 +128,9 @@ spec:
       {{- if .Values.heapDumpExporter.enabled }}
         - name: heap-dumps
           emptyDir: {}
+      {{- end }}
+      {{- if .Values.additionalVolumes }}
+        {{- toYaml .Values.additionalVolumes | nindent 8 }}
       {{- end }}
       {{- end }}
       {{- with .Values.nodeSelector }}
