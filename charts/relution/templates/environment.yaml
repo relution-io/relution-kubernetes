@@ -8,5 +8,5 @@ metadata:
 data:
   {{- range $key, $val := .Values.relution.environment }}
   {{ $key }}: {{ $val | quote }}
-  {{ end -}}
+  {{- end }}
 {{- end }}
