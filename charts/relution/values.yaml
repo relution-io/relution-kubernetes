@@ -59,3 +59,13 @@ relution:
   config: {}
   environment: {}
   secrets: {}
+
+# MySQL is provided as a dependency to enable quick debugging. We recommend deploying Relution on a dedicated database cluster.
+mysql:
+  enabled: false
+  auth:
+    # Please change these passwords before deploying Relution.
+    rootPassword: root
+    username: relution
+    password: relution
+    database: relution
