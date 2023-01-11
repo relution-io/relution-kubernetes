@@ -59,6 +59,7 @@ relution:
   config: {}
   environment: {}
   secrets: {}
+  existingSecretRefs: []
 
 # MySQL is provided as a dependency to enable quick debugging. We recommend deploying Relution on a dedicated database cluster.
 mysql:
