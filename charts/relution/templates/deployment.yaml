@@ -45,11 +45,17 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.relution.config }}
+          {{- if or .Values.relution.config .Values.heapDumpExporter.enabled }}
           volumeMounts:
+          {{- if .Values.relution.config }}
             - name: config
               mountPath: /opt/relution/application.yml
               subPath: application.yml
+          {{- end }}
+          {{- if .Values.heapDumpExporter.enabled }}
+            - name: heap-dumps
+              mountPath: {{ .Values.heapDumpExporter.directory }}
+          {{- end }}
           {{- end }}
           {{- if or .Values.relution.environment .Values.relution.secrets }}
           envFrom:
@@ -85,11 +91,37 @@ spec:
               port: monitoring
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- if .Values.relution.config }}
+        {{- if .Values.heapDumpExporter.enabled }}
+        - name: heap-dump-exporter
+          image: "{{ .Values.heapDumpExporter.image.repository }}:{{ .Values.heapDumpExporter.image.tag }}"
+          imagePullPolicy: {{ .Values.heapDumpExporter.image.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args:
+          - |
+            amazon-linux-extras install -y epel &&
+            yum install -y inotify-tools &&
+            echo "Listening for changes in directory '{{ .Values.heapDumpExporter.directory }}'..." &&
+            inotifywait -m {{ .Values.heapDumpExporter.directory }} -e close_write | while read path action file; do aws s3 --endpoint-url {{ .Values.heapDumpExporter.s3.endpointUrl }} cp "$path$file" "s3://{{ required "heapDumpExporter.s3.bucket is required!" .Values.heapDumpExporter.s3.bucket }}/{{ include "relution.fullname" . }}/$file"; done;
+          env:
+            - name: "AWS_ACCESS_KEY_ID"
+              value: {{ required "heapDumpExporter.s3.awsAccessKeyId is required!" .Values.heapDumpExporter.s3.awsAccessKeyId }}
+            - name: "AWS_SECRET_ACCESS_KEY"
+              value: {{ required "heapDumpExporter.s3.awsSecretAccessKey is required!" .Values.heapDumpExporter.s3.awsSecretAccessKey }}
+          volumeMounts:
+            - name: heap-dumps
+              mountPath: {{ .Values.heapDumpExporter.directory }}
+        {{- end }}
+      {{- if or .Values.relution.config .Values.heapDumpExporter.enabled }}
       volumes:
+      {{- if .Values.relution.config }}
         - name: config
           configMap:
             name: {{ include "relution.fullname" . }}-config
+      {{- end }}
+      {{- if .Values.heapDumpExporter.enabled }}
+        - name: heap-dumps
+          emptyDir: {}
+      {{- end }}
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
