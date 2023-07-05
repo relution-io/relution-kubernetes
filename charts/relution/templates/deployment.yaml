@@ -43,7 +43,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | required "Please specify which Relution version you want to use by setting image.tag to the appropriate tag." }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if or (or .Values.relution.config .Values.heapDumpExporter.enabled) .Values.additionalVolumeMounts }}
           volumeMounts:
