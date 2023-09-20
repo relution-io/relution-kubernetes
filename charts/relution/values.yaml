@@ -39,8 +39,15 @@ ingress:
   tls: []
 
 startupProbe:
+  enabled: true
   failureThreshold: 30
   periodSeconds: 10
+
+readinessProbe:
+  enabled: true
+
+livenessProbe:
+  enabled: true
 
 resources: {}
 
