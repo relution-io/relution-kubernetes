@@ -138,7 +138,7 @@ spec:
       {{- if .Values.heapDumpExporter.enabled }}
         - name: heap-dumps
           persistentVolumeClaim:
-            claimName: {{ include "relution.fullname" . }}
+            claimName: {{ include "relution.fullname" . }}-heap-dump-exporter
       {{- end }}
       {{- if .Values.additionalVolumes }}
         {{- toYaml .Values.additionalVolumes | nindent 8 }}
