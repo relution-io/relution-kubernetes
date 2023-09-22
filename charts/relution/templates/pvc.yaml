@@ -10,6 +10,6 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.persistence.size }}
-  storageClassName: {{ .Values.persistence.storageClass }}
+      storage: {{ .Values.heapDumpExporter.persistence.size }}
+  storageClassName: {{ .Values.heapDumpExporter.persistence.storageClass }}
 {{- end }}
