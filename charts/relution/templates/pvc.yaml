@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "relution.fullname" . }}
+  name: {{ include "relution.fullname" . }}-heap-dump-exporter
   labels:
     {{- include "relution.labels" . | nindent 4 }}
 spec:
