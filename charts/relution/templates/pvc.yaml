@@ -11,5 +11,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.size }}
-  storageClassName: {{ default "standard" .Values.persistence.storageClass }}
+  storageClassName: {{ .Values.persistence.storageClass | required "Please specify which storage class you want to use by setting persistence.storageClass to the appropriate storage class."}}
 {{- end }}
