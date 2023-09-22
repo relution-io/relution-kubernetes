@@ -73,10 +73,6 @@ relution:
 additionalVolumes: []
 additionalVolumeMounts: []
 
-persistence:
-  size: 10Gi
-  storageClass: ""
-
 # The heap dump exporter sidecar is intended to be used for debugging. It will monitor the /opt/relution/log directory (customizable) and copy new files to a S3 bucket so they can be further inspected by our development team.
 heapDumpExporter:
   enabled: false
@@ -90,6 +86,9 @@ heapDumpExporter:
     bucket: ""
     awsAccessKeyId: ""
     awsSecretAccessKey: ""
+  persistence:
+    size: 10Gi
+    storageClass: ""
 
 # MariaDB is provided as a dependency to enable quick debugging. We recommend deploying Relution on a dedicated database cluster.
 mariadb:
