@@ -86,7 +86,6 @@ heapDumpExporter:
     bucket: ""
     awsAccessKeyId: ""
     awsSecretAccessKey: ""
-
   persistence:
     size: 10Gi
     storageClass: ""
