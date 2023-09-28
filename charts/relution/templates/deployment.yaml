@@ -8,6 +8,10 @@ spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
+  {{- if .Values.heapDumpExporter.enabled }}
+  strategy:
+    type: Recreate
+  {{- end }}
   selector:
     matchLabels:
       {{- include "relution.selectorLabels" . | nindent 6 }}
@@ -42,6 +46,17 @@ spec:
       {{- if .Values.hostAliases }}
       hostAliases:
         {{- toYaml .Values.hostAliases | nindent 8 }}
+      {{- end }}
+      {{- if .Values.heapDumpExporter.enabled }}
+      initContainers:
+        - name: volume-permission
+          image: busybox:1.28
+          command: ["/bin/sh", "-c"]
+          args:
+            - chmod -R 777 {{ .Values.heapDumpExporter.directory }}
+          volumeMounts:
+            - name: heap-dumps
+              mountPath: {{ .Values.heapDumpExporter.directory }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
