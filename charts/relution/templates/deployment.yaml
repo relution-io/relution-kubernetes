@@ -51,8 +51,6 @@ spec:
       initContainers:
         - name: volume-permission
           image: busybox:1.28
-          securityContext:
-            runAsUser: 0
           command: ["/bin/sh", "-c"]
           args:
             - chmod -R 777 {{ .Values.heapDumpExporter.directory }}
