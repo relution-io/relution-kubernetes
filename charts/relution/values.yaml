@@ -74,7 +74,7 @@ additionalVolumes: []
 additionalVolumeMounts: []
 
 imageMagick:
-  enabled: false
+  enabled: true
   domains:
     resource:
       - name: "thread"
