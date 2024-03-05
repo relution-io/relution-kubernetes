@@ -75,6 +75,11 @@ spec:
               mountPath: /opt/relution/application.yml
               subPath: application.yml
           {{- end }}
+          {{- if .Values.imageMagick.enabled }}
+            - name: imagemagick
+              mountPath: /root/.config/ImageMagick/policy.xml
+              subPath: security-policy.xml
+          {{- end }}
           {{- if .Values.heapDumpExporter.enabled }}
             - name: heap-dumps
               mountPath: {{ .Values.heapDumpExporter.directory }}
@@ -153,6 +158,11 @@ spec:
         - name: config
           configMap:
             name: {{ include "relution.fullname" . }}-config
+      {{- end }}
+      {{- if .Values.imageMagick.enabled }}
+        - name: imagemagick
+          configMap:
+            name: {{ include "relution.fullname" . }}-imagemagick
       {{- end }}
       {{- if .Values.heapDumpExporter.enabled }}
         - name: heap-dumps

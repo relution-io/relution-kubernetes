@@ -73,6 +73,61 @@ relution:
 additionalVolumes: []
 additionalVolumeMounts: []
 
+imageMagick:
+  enabled: false
+  domains:
+    resource:
+      - name: "thread"
+        value: 2
+      - name: "time"
+        value: 30
+      - name: "file"
+        value: 768
+      - name: "memory"
+        value: 128MiB
+      - name: "map"
+        value: 256MiB
+      - name: "area"
+        value: 16KP
+      - name: "disk"
+        value: 512MiB
+      - name: "list-length"
+        value: 16
+      - name: "width"
+        value: 8KP
+      - name: "height"
+        value: 8KP
+      - name: "throttle"
+        value: 2
+    system:
+      - name: "shred"
+        value: 1
+      - name: "max-memory-request"
+        value: 256MiB
+    delegate:
+      - rights: none
+        pattern: "*"
+    filter:
+      - rights: none
+        pattern: "*"
+    path:
+      - rights: none
+        pattern: "/etc/*"
+      - rights: none
+        pattern: "@*"
+    module:
+      - rights: none
+        pattern: "{MSL,MVG,PS,SVG,URL,XPS}"
+      - rights: none
+        pattern: "*"
+      - rights: read | write
+        pattern: "{GIF,JPEG,JPG,PNG,WEBP,RGB,RGBA,CAPTION,CANVAS}"
+    coder:
+      - rights: none
+        pattern: "*"
+      - rights: read | write
+        pattern: "{GIF,JPEG,JPG,PNG,WEBP,RGB,RGBA,CAPTION,CANVAS}"
+
 # The heap dump exporter sidecar is intended to be used for debugging. It will monitor the /opt/relution/log directory (customizable) and copy new files to a S3 bucket so they can be further inspected by our development team.
 heapDumpExporter:
   enabled: false

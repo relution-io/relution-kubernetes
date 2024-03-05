@@ -1,0 +1,27 @@
+{{- with .Values.imageMagick -}}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policymap [
+   <!ELEMENT policymap (policy)*>
+   <!ATTLIST policymap xmlns CDATA #FIXED "">
+   <!ELEMENT policy EMPTY>
+   <!ATTLIST policy xmlns CDATA #FIXED "">
+   <!ATTLIST policy domain NMTOKEN #REQUIRED>
+   <!ATTLIST policy name NMTOKEN #IMPLIED>
+   <!ATTLIST policy pattern CDATA #IMPLIED>
+   <!ATTLIST policy rights NMTOKEN #IMPLIED>
+   <!ATTLIST policy stealth NMTOKEN #IMPLIED>
+   <!ATTLIST policy value CDATA #IMPLIED>
+]>
+<policymap>
+   {{- range $domain, $settings := .domains }}
+   {{- range $settings }}
+   <policy
+     domain="{{ $domain }}"
+     {{- range $key, $value := . }}
+     {{ $key }}="{{ $value }}"
+     {{- end }}
+   />
+   {{- end }}
+   {{- end }}
+</policymap>
+{{- end -}}
