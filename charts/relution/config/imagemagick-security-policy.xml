@@ -16,6 +16,7 @@
    {{- range $domain, $settings := .domains }}
    {{- range $settings }}
    <policy
+     domain="{{ $domain }}"
      {{- range $key, $value := . }}
      {{ $key }}="{{ $value }}"
      {{- end }}
