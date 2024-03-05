@@ -13,14 +13,14 @@
    <!ATTLIST policy value CDATA #IMPLIED>
 ]>
 <policymap>
-   {{- range $domain, $settings := .config }}
-   {{- range $name, $value := $settings }}
-   <policy domain="{{ $domain }}" name="{{ $name }}" value="{{ $value }}" />
-   {{- end -}}
+   {{- range $domain, $settings := .domains }}
+   {{- range $settings }}
+   <policy
+     {{- range $key, $value := . }}
+     {{ $key }}="{{ $value }}"
+     {{- end }}
+   />
    {{- end }}
-
-   {{- range .rights }}
-   <policy domain="{{ .domain }}" rights="{{ .rights }}" pattern="{{ .pattern }}" />
    {{- end }}
 </policymap>
 {{- end -}}

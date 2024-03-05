@@ -75,50 +75,58 @@ additionalVolumeMounts: []
 
 imageMagick:
   enabled: false
-  config:
+  domains:
     resource:
-      thread: 2
-      time: 30
-      file: 768
-      memory: 128MiB
-      map: 256MiB
-      area: 16KP
-      disk: 512MiB
-      list-length: 16
-      width: 8KP
-      height: 8KP
-      throttle: 2
+      - name: "thread"
+        value: 2
+      - name: "time"
+        value: 30
+      - name: "file"
+        value: 768
+      - name: "memory"
+        value: 128MiB
+      - name: "map"
+        value: 256MiB
+      - name: "area"
+        value: 16KP
+      - name: "disk"
+        value: 512MiB
+      - name: "list-length"
+        value: 16
+      - name: "width"
+        value: 8KP
+      - name: "height"
+        value: 8KP
+      - name: "throttle"
+        value: 2
     system:
-      shred: 1
-      max-memory-request: 256MiB
-  rights:
-    - domain: delegate
-      rights: none
-      pattern: "*"
-    - domain: filter
-      rights: none
-      pattern: "*"
-    - domain: path
-      rights: none
-      pattern: "/etc/*"
-    - domain: path
-      rights: none
-      pattern: "@*"
-    - domain: module
-      rights: none
-      pattern: "{MSL,MVG,PS,SVG,URL,XPS}"
-    - domain: module
-      rights: none
-      pattern: "*"
-    - domain: module
-      rights: read | write
-      pattern: "{GIF,JPEG,JPG,PNG,WEBP,RGB,RGBA,CAPTION,CANVAS}"
-    - domain: coder
-      rights: none
-      pattern: "*"
-    - domain: coder
-      rights: read | write
-      pattern: "{GIF,JPEG,JPG,PNG,WEBP,RGB,RGBA,CAPTION,CANVAS}"
+      - name: "shred"
+        value: 1
+      - name: "max-memory-request"
+        value: 256MiB
+    delegate:
+      - rights: none
+        pattern: "*"
+    filter:
+      - rights: none
+        pattern: "*"
+    path:
+      - rights: none
+        pattern: "/etc/*"
+      - rights: none
+        pattern: "@*"
+    module:
+      - rights: none
+        pattern: "{MSL,MVG,PS,SVG,URL,XPS}"
+      - rights: none
+        pattern: "*"
+      - rights: read | write
+        pattern: "{GIF,JPEG,JPG,PNG,WEBP,RGB,RGBA,CAPTION,CANVAS}"
+    coder:
+      - rights: none
+        pattern: "*"
+      - rights: read | write
+        pattern: "{GIF,JPEG,JPG,PNG,WEBP,RGB,RGBA,CAPTION,CANVAS}"
 
 # The heap dump exporter sidecar is intended to be used for debugging. It will monitor the /opt/relution/log directory (customizable) and copy new files to a S3 bucket so they can be further inspected by our development team.
 heapDumpExporter:
