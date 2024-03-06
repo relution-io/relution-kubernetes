@@ -31,6 +31,9 @@ spec:
         {{- if .Values.relution.secrets }}
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
         {{- end }}
+        {{- if .Values.imageMagick.enabled }}
+        checksum/imagemagick: {{ include (print $.Template.BasePath "/imagemagick-security-policy.yaml") . | sha256sum }}
+        {{- end }}
         prometheus.io/scrape: "true"
         prometheus.io/port: "8099"
         prometheus.io/path: "/actuator/prometheus"
