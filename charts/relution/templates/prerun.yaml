@@ -1,0 +1,11 @@
+{{- if .Values.relution.preRunScript -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "relution.fullname" . }}-prerun
+  labels:
+    {{- include "relution.labels" . | nindent 4 }}
+data:
+  prerun.sh: |
+    {{- tpl .Values.relution.preRunScript $ | nindent 4 }}
+{{- end -}}
