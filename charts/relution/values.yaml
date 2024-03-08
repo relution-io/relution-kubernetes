@@ -69,6 +69,7 @@ relution:
   environment: {}
   secrets: {}
   existingSecretRefs: []
+  preRunScript: null
 
 additionalVolumes: []
 additionalVolumeMounts: []
