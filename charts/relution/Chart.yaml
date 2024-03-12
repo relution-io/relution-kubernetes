@@ -2,6 +2,9 @@ apiVersion: v2
 name: relution
 description: Install Relution in your Kubernetes cluster using Helm.
 icon: https://relution.io/icons/icon-512x512.png
+maintainers:
+  - name: Niels Heidbrink
+    email: niels.heidbrink@mway.io
 
 type: application
 
