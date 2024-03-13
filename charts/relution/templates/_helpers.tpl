@@ -36,8 +36,8 @@ Common labels
 {{- define "relution.labels" -}}
 helm.sh/chart: {{ include "relution.chart" . }}
 {{ include "relution.selectorLabels" . }}
-{{- if .Values.image.tag }}
-app.kubernetes.io/version: {{ .Values.image.tag | quote }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
