@@ -1,0 +1,11 @@
+suite: test config
+values:
+  - ../ci/minimal-values.yaml
+templates:
+  - config.yaml
+tests:
+  - it: should work
+    asserts:
+      - template: config.yaml
+        isKind:
+          of: ConfigMap

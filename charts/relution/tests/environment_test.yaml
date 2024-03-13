@@ -1,0 +1,11 @@
+suite: test environment
+values:
+  - ../ci/full.yaml
+templates:
+  - environment.yaml
+tests:
+  - it: should work
+    asserts:
+      - template: environment.yaml
+        isKind:
+          of: ConfigMap
