@@ -28,6 +28,14 @@ jobs:
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.6.1
 
+      - name: Set up helm-unittest
+        run: |
+          helm plugin install https://github.com/helm-unittest/helm-unittest
+
+      - name: Install subchart dependencies
+        run: |
+          helm dependency build ./charts/relution
+
       - name: Run chart-testing (list-changed)
         id: list-changed
         run: |
@@ -39,6 +47,10 @@ jobs:
       - name: Run chart-testing (lint)
         if: steps.list-changed.outputs.changed == 'true'
         run: ct lint --target-branch ${{ github.event.repository.default_branch }}
+
+      - name: Run helm-unittest
+        run: |
+          helm unittest ./charts/relution
 
       - name: Create kind cluster
         if: steps.list-changed.outputs.changed == 'true'
