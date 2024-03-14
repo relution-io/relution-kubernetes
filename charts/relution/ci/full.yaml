@@ -1,0 +1,45 @@
+ingress:
+  enabled: true
+  hosts:
+    - host: "test.relution.io"
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+
+relution:
+  preRunScript: |
+    #!/bin/bash
+    echo "Prerun script ran." > /tmp/prerun.txt
+  config:
+    relution:
+      database:
+        type: mariadb
+        url: jdbc:mariadb://mariadb:3306/relution
+        username: relution
+        password: relution
+  environment:
+    RELUTION_SERVER_EXTERNALURL: https://test.relution.io
+    RELUTION_DATABASE_TYPE: mariadb
+    RELUTION_DATABASE_URL: jdbc:mariadb://mariadb:3306/relution
+    RELUTION_DATABASE_USERNAME: relution
+  secrets:
+    RELUTION_DATABASE_PASSWORD: relution
+
+autoscaling:
+  enabled: true
+
+heapDumpExporter:
+  enabled: true
+  s3:
+    bucket: s3://test-relution-io
+    awsAccessKeyId: relution
+    awsSecretAccessKey: relution
+
+mariadb:
+  enabled: true
+  fullnameOverride: mariadb
+  auth:
+    rootPassword: relution
+    username: relution
+    password: relution
+    database: relution

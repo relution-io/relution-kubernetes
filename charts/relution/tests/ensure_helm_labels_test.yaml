@@ -1,0 +1,21 @@
+suite: helm labels
+values:
+  - ../ci/full.yaml
+templates:
+  - "*.yaml"
+tests:
+  - it: should contain default helm labels
+    set:
+      mariadb:
+        enabled: false
+    asserts:
+      - exists:
+          path: metadata.labels['helm.sh/chart']
+      - exists:
+          path: metadata.labels['app.kubernetes.io/version']
+      - exists:
+          path: metadata.labels['app.kubernetes.io/managed-by']
+      - exists:
+          path: metadata.labels['app.kubernetes.io/name']
+      - exists:
+          path: metadata.labels['app.kubernetes.io/instance']
