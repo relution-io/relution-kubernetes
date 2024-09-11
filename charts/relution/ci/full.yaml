@@ -43,3 +43,18 @@ mariadb:
     username: relution
     password: relution
     database: relution
+
+networkPolicy:
+  enabled: true
+  spec:
+    policyTypes:
+      - Ingress
+      - Egress
+    ingress:
+      - from:
+          - ipBlock:
+              cidr: "0.0.0.0/0"
+    egress:
+      - to:
+          - ipBlock:
+              cidr: "0.0.0.0/0"
