@@ -155,3 +155,7 @@ mariadb:
     username: relution
     password: relution
     database: relution
+
+networkPolicy:
+  enabled: false
+  spec: {}
