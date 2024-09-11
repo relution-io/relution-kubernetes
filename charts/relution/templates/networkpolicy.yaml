@@ -1,4 +1,4 @@
-{{- if .Values.networkPolicy.enabled -}}
+{{- if .Values.networkPolicy.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -7,4 +7,4 @@ metadata:
     {{- include "relution.labels" . | nindent 4 }}
 spec:
   {{- .Values.networkPolicy.spec | toYaml | nindent 2 -}}
-{{- end -}}
+{{- end }}
