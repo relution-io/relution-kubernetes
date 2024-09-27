@@ -1,0 +1,15 @@
+{{- if .Values.ingressRoute.enabled -}}
+{{- $fullName := include "relution.fullname" . -}}
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "relution.labels" . | nindent 4 }}
+spec:
+  {{ with .Values.ingressRoute }}
+  entryPoints: {{ toYaml .entryPoints | nindent 4 }}
+  routes: {{ toYaml .routes | nindent 4 }} 
+  tls: {{ toYaml .tls | nindent 4 }}
+  {{ end }}
+{{- end }}

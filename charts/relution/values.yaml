@@ -38,6 +38,9 @@ ingress:
           pathType: ImplementationSpecific
   tls: []
 
+ingressRoute:
+  enabled: false
+
 startupProbe:
   enabled: true
   failureThreshold: 30

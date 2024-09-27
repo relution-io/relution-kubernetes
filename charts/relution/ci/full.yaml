@@ -6,6 +6,18 @@ ingress:
         - path: /
           pathType: ImplementationSpecific
 
+ingressRoute:
+  enabled: true
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`test.relution.io`)
+      services:
+        - kind: Service
+          name: {{ $fullName }}
+          port: {{ $svcPort }}
+
 relution:
   preRunScript: |
     #!/bin/bash
