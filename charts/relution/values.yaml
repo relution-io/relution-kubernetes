@@ -40,6 +40,18 @@ ingress:
 
 ingressRoute:
   enabled: false
+  entryPoints:
+    - web
+    - websecure
+  defaultRoute:
+    enabled: true
+    host: ""
+    middlewares: []
+  additionalRoutes: []
+  tls:
+    secretName: ""
+    certResolver: ""
+    domains: []
 
 startupProbe:
   enabled: true

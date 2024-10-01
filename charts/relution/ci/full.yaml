@@ -10,13 +10,18 @@ ingressRoute:
   enabled: true
   entryPoints:
     - websecure
-  routes:
+  defaultRoute:
+    host: "test.relution.io"
+  additionalRoutes:
     - kind: Rule
-      match: Host(`test.relution.io`)
+      match: "Host(`{{ .Values.ingressRoute.defaultRoute.host }}`) && Path(`test`)"
+      middlewares:
+        - name: test
+          namespace: test
       services:
         - kind: Service
-          name: {{ $fullName }}
-          port: {{ $svcPort }}
+          name: "{{ $fullName }}"
+          port: "{{ $svcPort }}"
 
 relution:
   preRunScript: |

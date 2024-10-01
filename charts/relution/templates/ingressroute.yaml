@@ -1,5 +1,6 @@
 {{- if .Values.ingressRoute.enabled -}}
 {{- $fullName := include "relution.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
@@ -7,9 +8,48 @@ metadata:
   labels:
     {{- include "relution.labels" . | nindent 4 }}
 spec:
-  {{ with .Values.ingressRoute }}
-  entryPoints: {{ toYaml .entryPoints | nindent 4 }}
-  routes: {{ toYaml .routes | nindent 4 }} 
-  tls: {{ toYaml .tls | nindent 4 }}
-  {{ end }}
+  entryPoints: {{ .Values.ingressRoute.entryPoints }}
+  routes:
+    {{- with .Values.ingressRoute.defaultRoute }}
+    {{- if .enabled }}
+    - kind: Rule
+      match: Host(`{{ tpl .host $ | quote }}`)
+      {{- with .middlewares }}
+      middlewares:
+      {{- range . }}
+      - name: {{ .name }}
+        namespace: {{ .namespace }}
+      {{- end }}
+      {{- end }}
+      services:
+      - kind: Service
+        name: {{ $fullName }}
+        namespace: {{ $.Release.Namespace }}
+        port: {{ $svcPort }}
+    {{- end }}
+    {{- end }}
+    {{- range .Values.ingressRoute.additionalRoutes }}
+    - kind: {{ .kind }}
+      match: {{ tpl .match $ | quote }}
+      {{- with .middlewares }}
+      middlewares:
+      {{- range . }}
+      - name: {{ .name }}
+        namespace: {{ .namespace }}
+      {{- end }}
+      {{- end }}
+      services:
+      {{- range .services }}
+      - kind: Service
+        name: {{ tpl .name $ | quote }}
+        namespace: {{ tpl .namespace $ | quote }}
+        port: {{ tpl .port $ | quote }}
+      {{- end }}
+    {{- end }}
+  {{- with .Values.ingressRoute.tls }}
+  tls:
+    secretName: {{ .secretName }}
+    certResolver: {{ .certResolver }}
+    domains: {{ .domains }}
+  {{- end }}
 {{- end }}
