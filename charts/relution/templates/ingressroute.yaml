@@ -13,7 +13,7 @@ spec:
     {{- with .Values.ingressRoute.defaultRoute }}
     {{- if .enabled }}
     - kind: Rule
-      match: Host(`{{ tpl .host $ | quote }}`)
+      match: Host(`{{ tpl .host $ }}`)
       {{- with .middlewares }}
       middlewares:
       {{- range . }}
@@ -30,7 +30,7 @@ spec:
     {{- end }}
     {{- range .Values.ingressRoute.additionalRoutes }}
     - kind: {{ .kind }}
-      match: {{ tpl .match $ | quote }}
+      match: {{ tpl .match $ }}
       {{- with .middlewares }}
       middlewares:
       {{- range . }}
