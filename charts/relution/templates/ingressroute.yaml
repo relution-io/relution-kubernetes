@@ -34,8 +34,8 @@ spec:
       {{- with .middlewares }}
       middlewares:
       {{- range . }}
-      - name: {{ required "ingressRoute.defaultRoute.middlewares[*].name is required!" .name }}
-        namespace: {{ required "ingressRoute.defaultRoute.middlewares[*].namespace is required!" .namespace }}
+      - name: {{ required "ingressRoute.additionalRoutes[*].middlewares[*].name is required!" .name }}
+        namespace: {{ required "ingressRoute.additionalRoutes[*].middlewares[*].namespace is required!" .namespace }}
       {{- end }}
       {{- end }}
       services:
