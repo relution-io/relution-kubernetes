@@ -6,6 +6,24 @@ ingress:
         - path: /
           pathType: ImplementationSpecific
 
+ingressRoute:
+  enabled: true
+  entryPoints:
+    - websecure
+  defaultRoute:
+    host: "test.relution.io"
+  additionalRoutes:
+    - kind: Rule
+      match: "Host(`{{ .Values.ingressRoute.defaultRoute.host }}`) && Path(`test`)"
+      middlewares:
+        - name: test
+          namespace: test
+  tls:
+    secretName: test-relution-io
+    certResolver: default
+    domains:
+      - test.relution.io
+
 relution:
   preRunScript: |
     #!/bin/bash

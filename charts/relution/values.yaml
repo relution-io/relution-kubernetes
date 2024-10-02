@@ -38,6 +38,18 @@ ingress:
           pathType: ImplementationSpecific
   tls: []
 
+ingressRoute:
+  enabled: false
+  entryPoints:
+    - web
+    - websecure
+  defaultRoute:
+    enabled: true
+    host: ""
+    middlewares: []
+  additionalRoutes: []
+  tls: {}
+
 startupProbe:
   enabled: true
   failureThreshold: 30
