@@ -22,6 +22,11 @@ ingressRoute:
         - kind: Service
           name: "{{ $fullName }}"
           port: "{{ $svcPort }}"
+  tls:
+    secretName: test-relution-io
+    certResolver: default
+    domains:
+      - test.relution.io
 
 relution:
   preRunScript: |

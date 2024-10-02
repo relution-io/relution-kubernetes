@@ -8,7 +8,7 @@ metadata:
   labels:
     {{- include "relution.labels" . | nindent 4 }}
 spec:
-  entryPoints: {{ .Values.ingressRoute.entryPoints }}
+  entryPoints: {{ toYaml .Values.ingressRoute.entryPoints | nindent 4 }}
   routes:
     {{- with .Values.ingressRoute.defaultRoute }}
     {{- if .enabled }}
@@ -39,17 +39,15 @@ spec:
       {{- end }}
       {{- end }}
       services:
-      {{- range .services }}
       - kind: Service
-        name: {{ tpl .name $ | quote }}
-        namespace: {{ tpl .namespace $ | quote }}
-        port: {{ tpl .port $ | quote }}
-      {{- end }}
+        name: {{ $fullName }}
+        namespace: {{ $.Release.Namespace }}
+        port: {{ $svcPort }}
     {{- end }}
   {{- with .Values.ingressRoute.tls }}
   tls:
-    secretName: {{ .secretName }}
-    certResolver: {{ .certResolver }}
-    domains: {{ .domains }}
+    secretName: {{ required "ingressRoute.tls.secretName is required!" .secretName }}
+    certResolver: {{ required "ingressRoute.tls.certResolver is required!" .certResolver }}
+    domains: {{ toYaml .domains | nindent 6 }}
   {{- end }}
 {{- end }}
