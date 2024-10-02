@@ -18,10 +18,6 @@ ingressRoute:
       middlewares:
         - name: test
           namespace: test
-      services:
-        - kind: Service
-          name: "{{ $fullName }}"
-          port: "{{ $svcPort }}"
   tls:
     secretName: test-relution-io
     certResolver: default
