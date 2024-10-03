@@ -12,6 +12,9 @@ ingressRoute:
     - websecure
   defaultRoute:
     host: "test.relution.io"
+    middlewares:
+      - name: test
+        namespace: test
   additionalRoutes:
     - kind: Rule
       match: "Host(`{{ .Values.ingressRoute.defaultRoute.host }}`) && Path(`test`)"
@@ -22,7 +25,9 @@ ingressRoute:
     secretName: test-relution-io
     certResolver: default
     domains:
-      - test.relution.io
+      - main: test.relution.io
+        sans:
+          - test-2.relution.io
 
 relution:
   preRunScript: |

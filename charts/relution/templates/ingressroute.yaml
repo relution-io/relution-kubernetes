@@ -17,15 +17,15 @@ spec:
       {{- with .middlewares }}
       middlewares:
       {{- range . }}
-      - name: {{ required "ingressRoute.defaultRoute.middlewares[*].name is required!" .name }}
-        namespace: {{ required "ingressRoute.defaultRoute.middlewares[*].namespace is required!" .namespace }}
+        - name: {{ required "ingressRoute.defaultRoute.middlewares[*].name is required!" .name }}
+          namespace: {{ required "ingressRoute.defaultRoute.middlewares[*].namespace is required!" .namespace }}
       {{- end }}
       {{- end }}
       services:
-      - kind: Service
-        name: {{ $fullName }}
-        namespace: {{ $.Release.Namespace }}
-        port: {{ $svcPort }}
+        - kind: Service
+          name: {{ $fullName }}
+          namespace: {{ $.Release.Namespace }}
+          port: {{ $svcPort }}
     {{- end }}
     {{- end }}
     {{- range .Values.ingressRoute.additionalRoutes }}
@@ -34,20 +34,26 @@ spec:
       {{- with .middlewares }}
       middlewares:
       {{- range . }}
-      - name: {{ required "ingressRoute.additionalRoutes[*].middlewares[*].name is required!" .name }}
-        namespace: {{ required "ingressRoute.additionalRoutes[*].middlewares[*].namespace is required!" .namespace }}
+        - name: {{ required "ingressRoute.additionalRoutes[*].middlewares[*].name is required!" .name }}
+          namespace: {{ required "ingressRoute.additionalRoutes[*].middlewares[*].namespace is required!" .namespace }}
       {{- end }}
       {{- end }}
       services:
-      - kind: Service
-        name: {{ $fullName }}
-        namespace: {{ $.Release.Namespace }}
-        port: {{ $svcPort }}
+        - kind: Service
+          name: {{ $fullName }}
+          namespace: {{ $.Release.Namespace }}
+          port: {{ $svcPort }}
     {{- end }}
   {{- with .Values.ingressRoute.tls }}
   tls:
     secretName: {{ required "ingressRoute.tls.secretName is required!" .secretName }}
     certResolver: {{ required "ingressRoute.tls.certResolver is required!" .certResolver }}
-    domains: {{ toYaml .domains | nindent 6 }}
+    domains:
+    {{- range .domains }}
+      - main: {{ required "ingressRoute.tls.domains[*].main is required!" .main }}
+        {{- with .sans }}
+        sans: {{ toYaml . | nindent 10 }}
+        {{- end }}
+    {{- end }}
   {{- end }}
 {{- end }}
