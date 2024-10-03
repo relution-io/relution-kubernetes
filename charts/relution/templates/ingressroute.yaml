@@ -29,7 +29,7 @@ spec:
     {{- end }}
     {{- end }}
     {{- range .Values.ingressRoute.additionalRoutes }}
-    - kind: {{ .kind }}
+    - kind: {{ required "ingressRoute.additionalRoutes[*].kind is required!" .kind }}
       match: "{{ tpl .match $ }}"
       {{- with .middlewares }}
       middlewares:
