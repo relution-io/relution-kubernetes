@@ -56,6 +56,11 @@ jobs:
         if: steps.list-changed.outputs.changed == 'true'
         uses: helm/kind-action@v1.9.0
 
+      - name: Install Traefik CRDs
+        if: steps.list-changed.outputs.changed == 'true'
+        run: |
+          kubectl apply --server-side --force-conflicts -k https://github.com/traefik/traefik-helm-chart/traefik/crds/
+
       - name: Run chart-testing (install)
         if: steps.list-changed.outputs.changed == 'true'
         run: |
