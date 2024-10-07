@@ -1,6 +1,6 @@
 suite: helm labels
 values:
-  - ../ci/full.yaml
+  - ../ci/full-values.yaml
 templates:
   - "*.yaml"
 tests:
