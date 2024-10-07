@@ -1,6 +1,6 @@
 suite: test environment
 values:
-  - ../ci/full.yaml
+  - ../ci/full-values.yaml
 templates:
   - environment.yaml
 tests:
