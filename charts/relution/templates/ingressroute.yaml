@@ -13,7 +13,11 @@ spec:
     {{- with .Values.ingressRoute.defaultRoute }}
     {{- if .enabled }}
     - kind: Rule
+      {{- if .match }}
+      match: {{ tpl .match $ | quote }}
+      {{- else }}
       match: "Host(`{{ tpl .host $ }}`)"
+      {{- end}}
       {{- with .middlewares }}
       middlewares:
       {{- range . }}
@@ -45,6 +49,7 @@ spec:
           port: {{ $svcPort }}
     {{- end }}
   {{- with .Values.ingressRoute.tls }}
+  {{- if .enabled }}
   tls:
     secretName: {{ required "ingressRoute.tls.secretName is required!" .secretName }}
     certResolver: {{ required "ingressRoute.tls.certResolver is required!" .certResolver }}
@@ -55,5 +60,6 @@ spec:
         sans: {{ toYaml . | nindent 10 }}
         {{- end }}
     {{- end }}
+  {{- end }}
   {{- end }}
 {{- end }}

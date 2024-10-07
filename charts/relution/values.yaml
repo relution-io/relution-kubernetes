@@ -45,10 +45,25 @@ ingressRoute:
     - websecure
   defaultRoute:
     enabled: true
+    match: ""
     host: ""
     middlewares: []
+    #  - name: ""
+    #    namespace: ""
   additionalRoutes: []
-  tls: {}
+  #  - kind: Rule
+  #    match: ""
+  #    middlewares: []
+  #    #  - name: ""
+  #    #    namespace: ""
+  tls:
+    enabled: false
+    secretName: ""
+    certResolver: ""
+    domains: []
+    #  - main: ""
+    #    sans:
+    #      - ""
 
 startupProbe:
   enabled: true

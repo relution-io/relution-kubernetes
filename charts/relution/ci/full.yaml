@@ -12,6 +12,7 @@ ingressRoute:
     - websecure
   defaultRoute:
     host: "test.relution.io"
+    match: "Host(`test.relution.io`) || Host(`test-2.relution.io`)"
     middlewares:
       - name: test
         namespace: test
@@ -22,6 +23,7 @@ ingressRoute:
         - name: test
           namespace: test
   tls:
+    enabled: true
     secretName: test-relution-io
     certResolver: default
     domains:
