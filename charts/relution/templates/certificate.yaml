@@ -1,5 +1,5 @@
 {{- with .Values.ingressRoute.tls }}
-{{- .generateCertificate }}
+{{- if .generateCertificate }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
