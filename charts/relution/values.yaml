@@ -58,6 +58,7 @@ ingressRoute:
   #    #    namespace: ""
   tls:
     enabled: false
+    generateCertificate: false
     secretName: ""
     certResolver: ""
     domains: []

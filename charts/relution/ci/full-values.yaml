@@ -24,6 +24,7 @@ ingressRoute:
           namespace: test
   tls:
     enabled: true
+    generateCertificate: true
     secretName: test-relution-io
     certResolver: default
     domains:

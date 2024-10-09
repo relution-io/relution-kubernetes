@@ -1,4 +1,5 @@
-{{ with .Values.ingressRoute.tls }}
+{{- with .Values.ingressRoute.tls }}
+{{- .generateCertificate }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -19,4 +20,5 @@ spec:
     name: {{ required "ingressRoute.tls.issuerRef.name is required!" .kind }}
   {{- end }}
   secretName: {{ .secretName }}
+{{- end }}
 {{- end }}
