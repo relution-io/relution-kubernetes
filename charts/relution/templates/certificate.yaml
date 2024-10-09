@@ -1,0 +1,22 @@
+{{ with .Values.ingressRoute.tls }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ .secretName }}
+  labels:
+    {{- include "relution.labels" $ | nindent 4 }}
+spec:
+  dnsNames:
+  {{- range .domains }}
+    - {{ .main }}
+    {{- range .sans }}
+    - {{ . }}
+    {{- end }}
+  {{- end }}
+  {{- with .issuerRef }}
+  issuerRef:
+    kind: {{ required "ingressRoute.tls.issuerRef.kind is required!" .kind }}
+    name: {{ required "ingressRoute.tls.issuerRef.name is required!" .kind }}
+  {{- end }}
+  secretName: {{ .secretName }}
+{{- end }}
