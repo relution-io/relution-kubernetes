@@ -31,6 +31,9 @@ ingressRoute:
       - main: test.relution.io
         sans:
           - test-2.relution.io
+    issuerRef:
+      kind: ClusterIssuer
+      name: "letsencrypt"
 
 relution:
   preRunScript: |

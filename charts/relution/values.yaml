@@ -65,6 +65,9 @@ ingressRoute:
     #  - main: ""
     #    sans:
     #      - ""
+    issuerRef:
+      kind: ClusterIssuer
+      name: ""
 
 startupProbe:
   enabled: true

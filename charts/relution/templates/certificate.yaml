@@ -14,11 +14,9 @@ spec:
     - {{ . }}
     {{- end }}
   {{- end }}
-  {{- with .issuerRef }}
   issuerRef:
-    kind: {{ required "ingressRoute.tls.issuerRef.kind is required!" .kind }}
-    name: {{ required "ingressRoute.tls.issuerRef.name is required!" .kind }}
-  {{- end }}
+    kind: {{ required "ingressRoute.tls.issuerRef.kind is required!" .issuerRef.kind }}
+    name: {{ required "ingressRoute.tls.issuerRef.name is required!" .issuerRef.name }}
   secretName: {{ .secretName }}
 {{- end }}
 {{- end }}
