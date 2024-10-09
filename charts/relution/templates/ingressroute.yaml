@@ -51,7 +51,9 @@ spec:
   {{- with .Values.ingressRoute.tls }}
   {{- if .enabled }}
   tls:
-    secretName: {{ required "ingressRoute.tls.secretName is required!" .secretName }}
+    {{- if .secretName }}
+    secretName: {{ .secretName }}
+    {{- end }}
     {{- if .certResolver }}
     certResolver: {{ .certResolver }}
     {{- end }}
