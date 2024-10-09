@@ -58,12 +58,16 @@ ingressRoute:
   #    #    namespace: ""
   tls:
     enabled: false
+    generateCertificate: false
     secretName: ""
     certResolver: ""
     domains: []
     #  - main: ""
     #    sans:
     #      - ""
+    issuerRef:
+      kind: ClusterIssuer
+      name: ""
 
 startupProbe:
   enabled: true

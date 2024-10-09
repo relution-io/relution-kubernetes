@@ -52,7 +52,9 @@ spec:
   {{- if .enabled }}
   tls:
     secretName: {{ required "ingressRoute.tls.secretName is required!" .secretName }}
-    certResolver: {{ required "ingressRoute.tls.certResolver is required!" .certResolver }}
+    {{- if .certResolver }}
+    certResolver: {{ .certResolver }}
+    {{- end }}
     domains:
     {{- range .domains }}
       - main: {{ required "ingressRoute.tls.domains[*].main is required!" .main }}
