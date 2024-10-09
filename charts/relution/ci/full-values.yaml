@@ -31,6 +31,9 @@ ingressRoute:
       - main: test.relution.io
         sans:
           - test-2.relution.io
+      - main: test-3.relution.io
+        sans:
+          - test-4.relution.io
     issuerRef:
       kind: ClusterIssuer
       name: "letsencrypt"
