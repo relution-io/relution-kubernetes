@@ -51,16 +51,20 @@ spec:
   {{- with .Values.ingressRoute.tls }}
   {{- if .enabled }}
   tls:
-    secretName: {{ required "ingressRoute.tls.secretName is required!" .secretName }}
+    {{- if .secretName }}
+    secretName: {{ .secretName }}
+    {{- end }}
     {{- if .certResolver }}
     certResolver: {{ .certResolver }}
     {{- end }}
+    {{- if .domains }}
     domains:
     {{- range .domains }}
       - main: {{ required "ingressRoute.tls.domains[*].main is required!" .main }}
         {{- with .sans }}
         sans: {{ toYaml . | nindent 10 }}
         {{- end }}
+    {{- end }}
     {{- end }}
   {{- end }}
   {{- end }}
