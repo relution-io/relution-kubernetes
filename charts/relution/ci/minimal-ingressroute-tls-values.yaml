@@ -1,7 +1,7 @@
 ingressRoute:
   enabled: true
   defaultRoute:
-    host: '{{ required "relution.config.relution.server.externalURL is required!" .Values.relution.config.relution.server.externalURL | replace "https://" "" }}'
+    host: '{{ .Values.relution.config.relution.server.externalURL | replace "https://" "" }}'
   tls:
     enabled: true
 
