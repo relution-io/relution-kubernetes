@@ -26,6 +26,7 @@ ingressRoute:
     enabled: true
     generateCertificate: true
     secretName: test-relution-io
+    certResolver: default
     domains:
       - main: test.relution.io
         sans:
