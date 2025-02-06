@@ -54,6 +54,7 @@ spec:
       hostAliases:
         {{- toYaml .Values.hostAliases | nindent 8 }}
       {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- if .Values.heapDumpExporter.enabled }}
       initContainers:
         - name: volume-permission
@@ -149,7 +150,6 @@ spec:
         - name: heap-dump-exporter
           image: "{{ .Values.heapDumpExporter.image.repository }}:{{ .Values.heapDumpExporter.image.tag }}"
           imagePullPolicy: {{ .Values.heapDumpExporter.image.pullPolicy }}
-          terminationGracePeriodSeconds: {{ .Values.heapDumpExporter.terminationGracePeriodSeconds }}
           command: ["/bin/sh", "-c"]
           args:
           - |
