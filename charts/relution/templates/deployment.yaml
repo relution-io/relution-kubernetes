@@ -12,7 +12,7 @@ spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
-  {{- if .Values.heapDumpExporter.enabled }}
+  {{- if and .Values.heapDumpExporter.enabled .Values.heapDumpExporter.persistence.enabled }}
   strategy:
     type: Recreate
   {{- end }}
@@ -149,6 +149,7 @@ spec:
         - name: heap-dump-exporter
           image: "{{ .Values.heapDumpExporter.image.repository }}:{{ .Values.heapDumpExporter.image.tag }}"
           imagePullPolicy: {{ .Values.heapDumpExporter.image.pullPolicy }}
+          terminationGracePeriodSeconds: {{ .Values.heapDumpExporter.terminationGracePeriodSeconds }}
           command: ["/bin/sh", "-c"]
           args:
           - |
@@ -185,8 +186,12 @@ spec:
       {{- end }}
       {{- if .Values.heapDumpExporter.enabled }}
         - name: heap-dumps
+          {{- if .Values.heapDumpExporter.persistence.enabled }}
           persistentVolumeClaim:
             claimName: {{ include "relution.fullname" . }}-heap-dump-exporter
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
       {{- end }}
       {{- if .Values.additionalVolumes }}
         {{- toYaml .Values.additionalVolumes | nindent 8 }}
