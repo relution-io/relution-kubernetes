@@ -29,7 +29,7 @@ mariadb:
 heapDumpExporter:
   enabled: true
   persistence:
-    enabled: true
+    enabled: false
   s3:
     bucket: s3://test-relution-io
     awsAccessKeyId: relution
