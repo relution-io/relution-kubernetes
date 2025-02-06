@@ -23,6 +23,8 @@ securityContext: {}
 
 hostAliases: []
 
+terminationGracePeriodSeconds: 30
+
 service:
   type: ClusterIP
   port: 80
@@ -174,6 +176,7 @@ heapDumpExporter:
     awsAccessKeyId: ""
     awsSecretAccessKey: ""
   persistence:
+    enabled: false
     size: 10Gi
     storageClass: ""
 
