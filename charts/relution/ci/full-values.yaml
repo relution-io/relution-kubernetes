@@ -56,6 +56,9 @@ relution:
     RELUTION_DATABASE_USERNAME: relution
   secrets:
     RELUTION_DATABASE_PASSWORD: relution
+  existingSecretRefs:
+    - name: TEST_SECRET
+      value: SOME_SECRET
 
 autoscaling:
   enabled: true
