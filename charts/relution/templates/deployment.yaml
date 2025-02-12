@@ -97,10 +97,15 @@ spec:
             {{- toYaml .Values.additionalVolumeMounts | nindent 12 }}
           {{- end }}
           {{- end }}
-          {{- if .Values.relution.preRunScript }}
+          {{- if or .Values.relution.preRunScript .Values.relution.existingSecretRefs }}
           env:
+          {{- if .Values.relution.preRunScript }}
             - name: RELUTION_PRERUN_SCRIPT
               value: /opt/relution/prerun.sh
+          {{- end }}
+          {{- if .Values.relution.existingSecretRefs }}
+            {{- toYaml .Values.relution.existingSecretRefs | nindent 12 }}
+          {{- end }}
           {{- end }}
           {{- if or .Values.relution.environment .Values.relution.secrets }}
           envFrom:
@@ -112,10 +117,6 @@ spec:
             - secretRef:
                 name: {{ include "relution.fullname" . }}-secrets
             {{- end }}
-          {{- end }}
-          {{- if .Values.relution.existingSecretRefs }}
-          env:
-            {{- toYaml .Values.relution.existingSecretRefs | nindent 12 }}
           {{- end }}
           ports:
             - name: http
