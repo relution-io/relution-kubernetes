@@ -101,6 +101,8 @@ relution:
   config: {}
   environment: {}
   secrets: {}
+  # - name: VARIABLE_NAME
+  #   value: VARIABLE_VALUE
   existingSecretRefs: []
   preRunScript: null
 
