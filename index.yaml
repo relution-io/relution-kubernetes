@@ -3,6 +3,25 @@ entries:
   relution:
   - apiVersion: v2
     appVersion: 5.29.1
+    created: "2025-02-12T09:39:15.775650186Z"
+    dependencies:
+    - condition: mariadb.enabled
+      name: mariadb
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.4.2
+    description: Install Relution in your Kubernetes cluster using Helm.
+    digest: 744cf3edd884ff10274b5ef09dc3d57444dfe5fc4eac41aa6d6cee8d374273dc
+    icon: https://relution.io/icons/icon-512x512.png
+    maintainers:
+    - email: niels.heidbrink@mway.io
+      name: niels-hb
+    name: relution
+    type: application
+    urls:
+    - https://github.com/relution-io/relution-kubernetes/releases/download/relution-2.5.1-1/relution-2.5.1-1.tgz
+    version: 2.5.1-1
+  - apiVersion: v2
+    appVersion: 5.29.1
     created: "2025-02-06T09:08:45.593824495Z"
     dependencies:
     - condition: mariadb.enabled
@@ -621,4 +640,4 @@ entries:
     urls:
     - https://github.com/relution-io/relution-kubernetes/releases/download/relution-0.0.1/relution-0.0.1.tgz
     version: 0.0.1
-generated: "2025-02-06T09:08:45.594254202Z"
+generated: "2025-02-12T09:39:15.776054841Z"
