@@ -60,6 +60,12 @@ relution:
     - name: TEST_SECRET
       value: SOME_SECRET
 
+readinessProbe:
+  timeoutSeconds: 30
+
+livenessProbe:
+  timeoutSeconds: 30
+
 autoscaling:
   enabled: true
 

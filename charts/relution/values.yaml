@@ -78,9 +78,11 @@ startupProbe:
 
 readinessProbe:
   enabled: true
+  timeoutSeconds: 1
 
 livenessProbe:
   enabled: true
+  timeoutSeconds: 1
 
 resources: {}
 

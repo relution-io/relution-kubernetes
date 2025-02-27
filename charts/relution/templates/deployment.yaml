@@ -138,12 +138,14 @@ spec:
             httpGet:
               path: /actuator/health/liveness
               port: monitoring
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           {{- end }}
           {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
               port: monitoring
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
