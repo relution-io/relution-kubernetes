@@ -7,6 +7,10 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "relution.labels" . | nindent 4 }}
+  {{- with .Values.ingressRoute.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   entryPoints: {{ toYaml .Values.ingressRoute.entryPoints | nindent 4 }}
   routes:
