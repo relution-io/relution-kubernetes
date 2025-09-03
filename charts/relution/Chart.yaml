@@ -5,15 +5,18 @@ icon: https://relution.io/icons/icon-512x512.png
 maintainers:
   - name: niels-hb
     email: niels.heidbrink@mway.io
+sources:
+  - https://relution.io
+  - https://github.com/relution-io/relution-kubernetes
 
 type: application
 
-version: 2.5.5-1
+version: 2.5.6-1
 
-appVersion: "5.29.2"
+appVersion: "5.33.0"
 
 dependencies:
   - name: mariadb
     repository: https://charts.bitnami.com/bitnami
-    version: 11.4.2
+    version: 12.2.9
     condition: mariadb.enabled
