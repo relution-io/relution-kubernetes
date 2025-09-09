@@ -65,6 +65,25 @@ spec:
           volumeMounts:
             - name: heap-dumps
               mountPath: {{ .Values.heapDumpExporter.directory }}
+        - name: heap-dump-exporter
+          image: "{{ .Values.heapDumpExporter.image.repository }}:{{ .Values.heapDumpExporter.image.tag }}"
+          imagePullPolicy: {{ .Values.heapDumpExporter.image.pullPolicy }}
+          restartPolicy: Always
+          command: ["/bin/sh", "-c"]
+          args:
+          - |
+            amazon-linux-extras install -y epel &&
+            yum install -y inotify-tools &&
+            echo "Listening for changes in directory '{{ .Values.heapDumpExporter.directory }}'..." &&
+            inotifywait -m {{ .Values.heapDumpExporter.directory }} -e close_write | while read path action file; do aws s3 --endpoint-url {{ .Values.heapDumpExporter.s3.endpointUrl }} cp "$path$file" "s3://{{ required "heapDumpExporter.s3.bucket is required!" .Values.heapDumpExporter.s3.bucket }}/{{ include "relution.fullname" . }}/$file"; done;
+          env:
+            - name: "AWS_ACCESS_KEY_ID"
+              value: {{ required "heapDumpExporter.s3.awsAccessKeyId is required!" .Values.heapDumpExporter.s3.awsAccessKeyId }}
+            - name: "AWS_SECRET_ACCESS_KEY"
+              value: {{ required "heapDumpExporter.s3.awsSecretAccessKey is required!" .Values.heapDumpExporter.s3.awsSecretAccessKey }}
+          volumeMounts:
+            - name: heap-dumps
+              mountPath: {{ .Values.heapDumpExporter.directory }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -149,26 +168,6 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-        {{- if .Values.heapDumpExporter.enabled }}
-        - name: heap-dump-exporter
-          image: "{{ .Values.heapDumpExporter.image.repository }}:{{ .Values.heapDumpExporter.image.tag }}"
-          imagePullPolicy: {{ .Values.heapDumpExporter.image.pullPolicy }}
-          command: ["/bin/sh", "-c"]
-          args:
-          - |
-            amazon-linux-extras install -y epel &&
-            yum install -y inotify-tools &&
-            echo "Listening for changes in directory '{{ .Values.heapDumpExporter.directory }}'..." &&
-            inotifywait -m {{ .Values.heapDumpExporter.directory }} -e close_write | while read path action file; do aws s3 --endpoint-url {{ .Values.heapDumpExporter.s3.endpointUrl }} cp "$path$file" "s3://{{ required "heapDumpExporter.s3.bucket is required!" .Values.heapDumpExporter.s3.bucket }}/{{ include "relution.fullname" . }}/$file"; done;
-          env:
-            - name: "AWS_ACCESS_KEY_ID"
-              value: {{ required "heapDumpExporter.s3.awsAccessKeyId is required!" .Values.heapDumpExporter.s3.awsAccessKeyId }}
-            - name: "AWS_SECRET_ACCESS_KEY"
-              value: {{ required "heapDumpExporter.s3.awsSecretAccessKey is required!" .Values.heapDumpExporter.s3.awsSecretAccessKey }}
-          volumeMounts:
-            - name: heap-dumps
-              mountPath: {{ .Values.heapDumpExporter.directory }}
-        {{- end }}
       {{- if or (or .Values.relution.config .Values.heapDumpExporter.enabled) .Values.additionalVolumes }}
       volumes:
       {{- if .Values.relution.config }}
