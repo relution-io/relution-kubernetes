@@ -68,6 +68,15 @@ relution:
     - name: TEST_SECRET
       value: SOME_SECRET
 
+additionalInitContainers:
+  - name: busybox
+    image: busybox:latest
+
+additionalSidecarContainers:
+  - name: busybox
+    image: busybox:latest
+    restartPolicy: Always
+
 readinessProbe:
   timeoutSeconds: 30
 
