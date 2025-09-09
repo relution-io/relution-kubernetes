@@ -69,12 +69,12 @@ relution:
       value: SOME_SECRET
 
 additionalInitContainers:
-  - name: busybox
+  - name: busybox-init
     image: busybox:latest
 
 additionalSidecarContainers:
-  - name: busybox
-    image: busybox:latest
+  - name: nginx-sidecar
+    image: nginx:latest
     restartPolicy: Always
 
 readinessProbe:

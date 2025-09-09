@@ -55,7 +55,7 @@ spec:
         {{- toYaml .Values.hostAliases | nindent 8 }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
-      {{- if or .Values.heapDumpExporter.enabled or .Values.additionalSidecarContainers .Values.additionalInitContainers }}
+      {{- if or (or .Values.heapDumpExporter.enabled .Values.additionalSidecarContainers) .Values.additionalInitContainers }}
       initContainers:
         {{- with .Values.additionalInitContainers }}
         {{ toYaml . | nindent 8 }}
