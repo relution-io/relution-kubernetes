@@ -110,6 +110,9 @@ relution:
   existingSecretRefs: []
   preRunScript: null
 
+additionalInitContainers: []
+additionalSidecarContainers: []
+
 additionalVolumes: []
 additionalVolumeMounts: []
 

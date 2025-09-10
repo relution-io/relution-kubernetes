@@ -68,6 +68,15 @@ relution:
     - name: TEST_SECRET
       value: SOME_SECRET
 
+additionalInitContainers:
+  - name: busybox-init
+    image: busybox:latest
+
+additionalSidecarContainers:
+  - name: nginx-sidecar
+    image: nginx:latest
+    restartPolicy: Always
+
 readinessProbe:
   timeoutSeconds: 30
 
