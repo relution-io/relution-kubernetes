@@ -60,7 +60,7 @@ spec:
         {{- with .Values.additionalInitContainers }}
         {{ toYaml . | nindent 8 }}
         {{- end }}
-        {{- if or .Values.heapDumpExporter.enabled }}
+        {{- if .Values.heapDumpExporter.enabled }}
         - name: volume-permission
           image: busybox:1.28
           command: ["/bin/sh", "-c"]
