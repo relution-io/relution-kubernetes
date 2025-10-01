@@ -24,12 +24,14 @@ ingressRoute:
     middlewares:
       - name: test
         namespace: test
+    priority: 10
   additionalRoutes:
     - kind: Rule
       match: "Host(`{{ .Values.ingressRoute.defaultRoute.host }}`) && Path(`test`)"
       middlewares:
         - name: test
           namespace: test
+      priority: 15
   tls:
     enabled: true
     generateCertificate: true

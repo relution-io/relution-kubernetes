@@ -54,12 +54,14 @@ ingressRoute:
     middlewares: []
     #  - name: ""
     #    namespace: ""
+  # priority: 10
   additionalRoutes: []
   #  - kind: Rule
   #    match: ""
   #    middlewares: []
   #    #  - name: ""
   #    #    namespace: ""
+  #    priority: 10
   tls:
     enabled: false
     generateCertificate: false

@@ -29,6 +29,9 @@ spec:
           namespace: {{ required "ingressRoute.defaultRoute.middlewares[*].namespace is required!" .namespace }}
       {{- end }}
       {{- end }}
+      {{- if .priority }}
+      priority: {{ .priority }}
+      {{- end }}
       services:
         - kind: Service
           name: {{ $fullName }}
@@ -45,6 +48,9 @@ spec:
         - name: {{ required "ingressRoute.additionalRoutes[*].middlewares[*].name is required!" .name }}
           namespace: {{ required "ingressRoute.additionalRoutes[*].middlewares[*].namespace is required!" .namespace }}
       {{- end }}
+      {{- end }}
+      {{- if .priority }}
+      priority: {{ .priority }}
       {{- end }}
       services:
         - kind: Service
