@@ -51,7 +51,7 @@ spec:
       {{- end }}
       {{- if .priority }}
       priority: {{ .priority }}
-      {{- else }}
+      {{- end }}
       services:
         - kind: Service
           name: {{ $fullName }}
