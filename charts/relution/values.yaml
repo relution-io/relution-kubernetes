@@ -75,16 +75,21 @@ ingressRoute:
 
 startupProbe:
   enabled: true
-  failureThreshold: 30
   periodSeconds: 10
+  timeoutSeconds: 1
+  failureThreshold: 30
 
 readinessProbe:
   enabled: true
+  periodSeconds: 10
   timeoutSeconds: 1
+  failureThreshold: 3
 
 livenessProbe:
   enabled: true
+  periodSeconds: 10
   timeoutSeconds: 1
+  failureThreshold: 3
 
 resources: {}
 
