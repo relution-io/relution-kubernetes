@@ -75,16 +75,21 @@ ingressRoute:
 
 startupProbe:
   enabled: true
-  failureThreshold: 30
   periodSeconds: 10
+  timeoutSeconds: 1
+  failureThreshold: 30
 
 readinessProbe:
   enabled: true
+  periodSeconds: 10
   timeoutSeconds: 1
+  failureThreshold: 3
 
 livenessProbe:
   enabled: true
+  periodSeconds: 10
   timeoutSeconds: 1
+  failureThreshold: 3
 
 resources: {}
 
@@ -192,6 +197,8 @@ heapDumpExporter:
 # MariaDB is provided as a dependency to enable quick debugging. We recommend deploying Relution on a dedicated database cluster.
 mariadb:
   enabled: false
+  image:
+    repository: bitnamilegacy/mariadb
   auth:
     # Please change these passwords before deploying Relution.
     rootPassword: root
