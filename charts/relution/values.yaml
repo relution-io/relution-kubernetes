@@ -197,6 +197,8 @@ heapDumpExporter:
 # MariaDB is provided as a dependency to enable quick debugging. We recommend deploying Relution on a dedicated database cluster.
 mariadb:
   enabled: false
+  image:
+    repository: bitnamilegacy/mariadb
   auth:
     # Please change these passwords before deploying Relution.
     rootPassword: root
