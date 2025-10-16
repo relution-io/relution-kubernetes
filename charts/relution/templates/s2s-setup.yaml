@@ -22,7 +22,7 @@ data:
   autoload.conf: |
     charon {
       start-scripts {
-        autoload = /tmp/autoload.sh
+        autoload = /opt/s2s/autoload.sh
       }
     }
   autoload.sh: |
