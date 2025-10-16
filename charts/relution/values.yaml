@@ -209,3 +209,26 @@ mariadb:
 networkPolicy:
   enabled: false
   spec: {}
+
+s2s:
+  enabled: false
+  image:
+    repository: ubuntu
+    pullPolicy: IfNotPresent
+    tag: "24.04"
+  packages:
+    strongswan: "5.9.13-2ubuntu4"
+    iptables: "1.8.10-3ubuntu2"
+  livenessProbe:
+    enabled: true
+  psk: ""
+  ike:
+    proposals: sha512-aes256-ecp384
+  ipsec:
+    proposals: chacha20poly1305-ecp384
+  remote:
+    ip: ""
+    subnets: []
+  local:
+    nat: ""
+    transferSubnet: ""

@@ -34,6 +34,10 @@ spec:
         {{- if .Values.imageMagick.enabled }}
         checksum/imagemagick: {{ include (print $.Template.BasePath "/imagemagick-security-policy.yaml") . | sha256sum }}
         {{- end }}
+        {{- if .Values.s2s.enabled }}
+        checksum/s2s-strongswan-config: {{ include (print $.Template.BasePath "/s2s-strongswan-config.yaml") . | sha256sum }}
+        checksum/s2s-setup: {{ include (print $.Template.BasePath "/s2s-setup.yaml") . | sha256sum }}
+        {{- end }}
         prometheus.io/scrape: "true"
         prometheus.io/port: "8099"
         prometheus.io/path: "/actuator/prometheus"
@@ -55,7 +59,7 @@ spec:
         {{- toYaml .Values.hostAliases | nindent 8 }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
-      {{- if or (or .Values.heapDumpExporter.enabled .Values.additionalSidecarContainers) .Values.additionalInitContainers }}
+      {{- if or (or (or .Values.heapDumpExporter.enabled .Values.s2s.enabled) .Values.additionalInitContainers) .Values.additionalSidecarContainers }}
       initContainers:
         {{- with .Values.additionalInitContainers }}
         {{ toYaml . | nindent 8 }}
@@ -88,6 +92,43 @@ spec:
           volumeMounts:
             - name: heap-dumps
               mountPath: {{ .Values.heapDumpExporter.directory }}
+        {{- end }}
+        {{- if .Values.s2s.enabled }}
+        - name: "s2s"
+          securityContext:
+            capabilities:
+              add: ["NET_ADMIN"]
+          image: "{{ .Values.s2s.image.repository }}:{{ .Values.s2s.image.tag }}"
+          imagePullPolicy: {{ .Values.s2s.image.pullPolicy }}
+          restartPolicy: Always
+          command: [ "/bin/bash", "-c", "/opt/s2s/entrypoint.sh" ]
+          {{- if .Values.s2s.livenessProbe.enabled }}
+          livenessProbe:
+            initialDelaySeconds: 30
+            exec:
+              command: [ "/bin/bash", "-c", "/opt/s2s/health.sh" ]
+          {{- end }}
+          volumeMounts:
+            - name: s2s-strongswan-config
+              mountPath: "/etc/swanctl/conf.d/s2s.conf"
+              subPath: s2s.conf
+              readOnly: true
+            - name: s2s-setup
+              mountPath: "/opt/s2s/entrypoint.sh"
+              subPath: entrypoint.sh
+              readOnly: true
+            - name: s2s-setup
+              mountPath: "/etc/strongswan.d/autoload.conf"
+              subPath: autoload.conf
+              readOnly: true
+            - name: s2s-setup
+              mountPath: "/opt/s2s/autoload.sh"
+              subPath: autoload.sh
+              readOnly: true
+            - name: s2s-setup
+              mountPath: "/opt/s2s/health.sh"
+              subPath: health.sh
+              readOnly: true
         {{- end }}
         {{- with .Values.additionalSidecarContainers }}
         {{ toYaml . | nindent 8 }}
@@ -207,6 +248,15 @@ spec:
           {{- else }}
           emptyDir: {}
           {{- end }}
+      {{- end }}
+      {{- if .Values.s2s.enabled }}
+        - name: s2s-strongswan-config
+          secret:
+            secretName: {{ include "relution.fullname" . }}-s2s-strongswan-config
+        - name: s2s-setup
+          configMap:
+            name: {{ include "relution.fullname" . }}-s2s-setup
+            defaultMode: 500
       {{- end }}
       {{- if .Values.additionalVolumes }}
         {{- toYaml .Values.additionalVolumes | nindent 8 }}
