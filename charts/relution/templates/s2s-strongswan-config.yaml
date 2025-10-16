@@ -1,0 +1,41 @@
+{{- if .Values.s2s.enabled }}
+kind: Secret
+apiVersion: v1
+metadata:
+  name: {{ include "relution.fullname" . }}-s2s-strongswan-config
+  labels:
+    {{- include "relution.labels" . | nindent 4 }}
+stringData:
+  s2s.conf: |
+    connections {
+      gw-gw {
+        remote_addrs = {{ required "s2s.remote.ip is required." .Values.s2s.remote.ip }}
+        version      = 2
+        proposals    = {{ .Values.s2s.ike.proposals }}
+
+        local {
+          id   = relution
+          auth = psk
+        }
+        remote {
+          auth = psk
+        }
+
+        children {
+          net-net {
+            local_ts      = {{ required "s2s.local.transferSubnet is required." .Values.s2s.local.transferSubnet }}
+            remote_ts     = {{ join "," .Values.s2s.remote.subnets }}
+            start_action  = start
+            updown        = /usr/lib/ipsec/_updown iptables
+            esp_proposals = {{ .Values.s2s.ipsec.proposals }}
+          }
+        }
+      }
+    }
+
+    secrets {
+      ike-psk {
+        secret = {{ required "s2s.psk is required." .Values.s2s.psk | quote }}
+      }
+    }
+{{- end }}

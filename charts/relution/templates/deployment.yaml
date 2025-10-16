@@ -34,6 +34,10 @@ spec:
         {{- if .Values.imageMagick.enabled }}
         checksum/imagemagick: {{ include (print $.Template.BasePath "/imagemagick-security-policy.yaml") . | sha256sum }}
         {{- end }}
+        {{- if .Values.s2s.enabled }}
+        checksum/s2s-strongswan-config: {{ include (print $.Template.BasePath "/s2s-strongswan-config.yaml") . | sha256sum }}
+        checksum/s2s-setup: {{ include (print $.Template.BasePath "/s2s-setup.yaml") . | sha256sum }}
+        {{- end }}
         prometheus.io/scrape: "true"
         prometheus.io/port: "8099"
         prometheus.io/path: "/actuator/prometheus"
@@ -55,7 +59,7 @@ spec:
         {{- toYaml .Values.hostAliases | nindent 8 }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
-      {{- if or (or .Values.heapDumpExporter.enabled .Values.additionalSidecarContainers) .Values.additionalInitContainers }}
+      {{- if or (or (or .Values.heapDumpExporter.enabled .Values.s2s.enabled) .Values.additionalInitContainers) .Values.additionalSidecarContainers }}
       initContainers:
         {{- with .Values.additionalInitContainers }}
         {{ toYaml . | nindent 8 }}
@@ -88,6 +92,42 @@ spec:
           volumeMounts:
             - name: heap-dumps
               mountPath: {{ .Values.heapDumpExporter.directory }}
+        {{- end }}
+        {{- if .Values.s2s.enabled }}
+        - name: "s2s"
+          securityContext:
+            capabilities:
+              add: ["NET_ADMIN"]
+          image: "ubuntu:latest"
+          restartPolicy: Always
+          command: [ "/bin/bash", "-c", "/tmp/entrypoint.sh" ]
+          {{- if .Values.s2s.livenessProbe.enabled }}
+          livenessProbe:
+            initialDelaySeconds: 30
+            exec:
+              command: [ "/bin/bash", "-c", "/tmp/health.sh" ]
+          {{- end }}
+          volumeMounts:
+            - name: strongswan
+              mountPath: "/etc/swanctl/conf.d/s2s.conf"
+              subPath: s2s.conf
+              readOnly: true
+            - name: setup
+              mountPath: "/tmp/entrypoint.sh"
+              subPath: entrypoint.sh
+              readOnly: true
+            - name: setup
+              mountPath: "/etc/strongswan.d/autoload.conf"
+              subPath: autoload.conf
+              readOnly: true
+            - name: setup
+              mountPath: "/tmp/autoload.sh"
+              subPath: autoload.sh
+              readOnly: true
+            - name: setup
+              mountPath: "/tmp/health.sh"
+              subPath: health.sh
+              readOnly: true
         {{- end }}
         {{- with .Values.additionalSidecarContainers }}
         {{ toYaml . | nindent 8 }}
@@ -207,6 +247,15 @@ spec:
           {{- else }}
           emptyDir: {}
           {{- end }}
+      {{- end }}
+      {{- if .Values.s2s.enabled }}
+        - name: strongswan
+          secret:
+            secretName: {{ include "shield.fullname" . }}-strongswan-config
+        - name: setup
+          configMap:
+            name: {{ include "shield.fullname" . }}-setup
+            defaultMode: 500
       {{- end }}
       {{- if .Values.additionalVolumes }}
         {{- toYaml .Values.additionalVolumes | nindent 8 }}

@@ -118,3 +118,8 @@ networkPolicy:
       - to:
           - ipBlock:
               cidr: "0.0.0.0/0"
+
+s2s:
+  enabled: true
+  livenessProbe:
+    enabled: false
