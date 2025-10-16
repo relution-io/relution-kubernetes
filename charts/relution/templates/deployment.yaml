@@ -98,7 +98,8 @@ spec:
           securityContext:
             capabilities:
               add: ["NET_ADMIN"]
-          image: "ubuntu:latest"
+          image: "{{ .Values.s2s.image.repository }}:{{ .Values.s2s.image.tag }}"
+          imagePullPolicy: {{ .Values.s2s.image.pullPolicy }}
           restartPolicy: Always
           command: [ "/bin/bash", "-c", "/tmp/entrypoint.sh" ]
           {{- if .Values.s2s.livenessProbe.enabled }}

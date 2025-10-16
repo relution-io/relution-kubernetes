@@ -212,6 +212,13 @@ networkPolicy:
 
 s2s:
   enabled: false
+  image:
+    repository: ubuntu
+    pullPolicy: IfNotPresent
+    tag: "24.04"
+  packages:
+    strongswan: "5.9.13-2ubuntu4"
+    iptables: "1.8.10-3ubuntu2"
   livenessProbe:
     enabled: true
   psk: ""
