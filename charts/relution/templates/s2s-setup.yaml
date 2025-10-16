@@ -9,9 +9,9 @@ data:
   entrypoint.sh: |
     #!/bin/bash -e
     apt-get update && apt-get install -y \
-      strongswan \
-      strongswan-swanctl \
-      iptables;
+      strongswan=5.9.13-2ubuntu4 \
+      strongswan-swanctl=5.9.13-2ubuntu4 \
+      iptables=1.8.10-3ubuntu2;
 
     {{- range .Values.s2s.remote.subnets }}
     iptables -C POSTROUTING -t nat -d {{ . }} -j SNAT --to-source {{ required "s2s.local.nat is required."  $.Values.s2s.local.nat }} || \
