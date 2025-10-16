@@ -251,10 +251,10 @@ spec:
       {{- if .Values.s2s.enabled }}
         - name: strongswan
           secret:
-            secretName: {{ include "relution.fullname" . }}-strongswan-config
+            secretName: {{ include "relution.fullname" . }}-s2s-strongswan-config
         - name: setup
           configMap:
-            name: {{ include "relution.fullname" . }}-setup
+            name: {{ include "relution.fullname" . }}-s2s-setup
             defaultMode: 500
       {{- end }}
       {{- if .Values.additionalVolumes }}
