@@ -123,3 +123,8 @@ s2s:
   enabled: true
   livenessProbe:
     enabled: false
+  psk: "sharedsecret"
+  remote:
+    ip: 1.2.3.4
+  local:
+    transferSubnet: 10.10.10.10/32
