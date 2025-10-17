@@ -1,8 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:recommended",
+    "customManagers:dockerfileVersions",
+    "customManagers:helmChartYamlAppVersions"
   ],
+
+  "branchPrefix": "deps/",
+  "semanticCommits": "enabled",
 
   "customManagers": [
     {
