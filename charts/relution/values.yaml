@@ -217,7 +217,9 @@ s2s:
     pullPolicy: IfNotPresent
     tag: "24.04"
   packages:
+    # renovate: suite=noble depName=strongswan
     strongswan: "5.9.13-2ubuntu4"
+    # renovate: suite=noble depName=iptables
     iptables: "1.8.10-3ubuntu2"
   livenessProbe:
     enabled: true
