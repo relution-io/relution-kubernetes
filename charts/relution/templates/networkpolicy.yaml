@@ -6,5 +6,19 @@ metadata:
   labels:
     {{- include "relution.labels" . | nindent 4 }}
 spec:
-  {{- .Values.networkPolicy.spec | toYaml | nindent 2 -}}
+  podSelector:
+    matchLabels:
+      {{- include "relution.selectorLabels" . | nindent 6 }}
+  {{- with .Values.networkPolicy.egress }}
+  egress:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.networkPolicy.ingress }}
+  ingress:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.networkPolicy.policyTypes }}
+  policyTypes:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 {{- end }}

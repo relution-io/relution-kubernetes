@@ -208,7 +208,9 @@ mariadb:
 
 networkPolicy:
   enabled: false
-  spec: {}
+  ingress: {}
+  egress: {}
+  policyTypes: []
 
 s2s:
   enabled: false
