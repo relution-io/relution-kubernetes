@@ -220,7 +220,7 @@ s2s:
     tag: "24.04"
   packages:
     # renovate: suite=noble depName=strongswan
-    strongswan: "5.9.13-2ubuntu4"
+    strongswan: "5.9.13-2ubuntu4.24.04.1"
     # renovate: suite=noble depName=iptables
     iptables: "1.8.10-3ubuntu2"
   livenessProbe:
