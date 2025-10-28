@@ -1,4 +1,4 @@
-{{- if .Values.heapDumpExporter.persistence.enabled }}
+{{- if and .Values.heapDumpExporter.enabled .Values.heapDumpExporter.persistence.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
