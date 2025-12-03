@@ -19,6 +19,10 @@ spec:
     - kind: Rule
       {{- if .match }}
       match: {{ tpl .match $ | quote }}
+      {{- else if .hosts }}
+      match: "Host(`{{ tpl (index .hosts 0) $ }}`)
+            {{- range (slice .hosts 1) }} || Host(`{{ tpl . $ }}`)
+            {{- end}}"
       {{- else }}
       match: "Host(`{{ tpl .host $ }}`)"
       {{- end}}
