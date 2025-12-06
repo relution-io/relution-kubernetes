@@ -1,0 +1,12 @@
+suite: test ingressroute
+values:
+  - ../ci/ingressroute-hosts.yaml
+templates:
+  - ingressroute.yaml
+tests:
+  - it: should work
+    asserts:
+      - template: ingressroute.yaml
+        equal:
+          path: spec.routes[0].match
+          value: "Host(`test.relution.io`) || Host(`test.eu.relution.io`)"
