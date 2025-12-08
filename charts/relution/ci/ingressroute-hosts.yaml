@@ -1,0 +1,26 @@
+ingressRoute:
+  enabled: true
+  defaultRoute:
+    hosts:
+      - test.relution.io
+      - test.eu.relution.io
+
+relution:
+  config:
+    relution:
+      server:
+        externalURL: https://test.relution.io
+      database:
+        type: mariadb
+        url: jdbc:mariadb://mariadb:3306/relution
+        username: relution
+        password: relution
+
+mariadb:
+  enabled: true
+  fullnameOverride: mariadb
+  auth:
+    rootPassword: relution
+    username: relution
+    password: relution
+    database: relution

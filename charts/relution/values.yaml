@@ -51,6 +51,7 @@ ingressRoute:
     enabled: true
     match: ""
     host: ""
+    hosts: []
     middlewares: []
     #  - name: ""
     #    namespace: ""
