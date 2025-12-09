@@ -183,7 +183,7 @@ heapDumpExporter:
   image:
     repository: amazon/aws-cli
     pullPolicy: IfNotPresent
-    tag: "2.9.13"
+    tag: "2.32.12"
   directory: /opt/relution/log
   s3:
     endpointUrl: https://s3.eu-central-1.amazonaws.com
