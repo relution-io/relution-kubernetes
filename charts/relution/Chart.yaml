@@ -18,5 +18,5 @@ appVersion: "5.35.4"
 dependencies:
   - name: mariadb
     repository: https://charts.bitnami.com/bitnami
-    version: 12.2.9
+    version: 24.0.2
     condition: mariadb.enabled
