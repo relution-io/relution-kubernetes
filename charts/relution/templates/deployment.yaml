@@ -118,8 +118,8 @@ spec:
               subPath: entrypoint.sh
               readOnly: true
             - name: s2s-setup
-              mountPath: "/etc/strongswan.d/autoload.conf"
-              subPath: autoload.conf
+              mountPath: "/etc/strongswan.d/charon-custom.conf"
+              subPath: charon-custom.conf
               readOnly: true
             - name: s2s-setup
               mountPath: "/opt/s2s/autoload.sh"

@@ -14,7 +14,7 @@ stringData:
         proposals    = {{ .Values.s2s.ike.proposals }}
 
         local {
-          id   = relution
+          id   = {{ .Values.s2s.local.id | default "relution" }}
           auth = psk
         }
         remote {

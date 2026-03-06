@@ -19,10 +19,17 @@ data:
     {{- end }}
 
     /usr/lib/ipsec/charon;
-  autoload.conf: |
+  charon-custom.conf: |
     charon {
       start-scripts {
         autoload = /opt/s2s/autoload.sh
+      }
+
+      filelog {
+        stdout {
+          default = {{ .Values.s2s.logLevel | default 1 }}
+          enc = {{ .Values.s2s.logLevel | default 1 }}
+        }
       }
     }
   autoload.sh: |
