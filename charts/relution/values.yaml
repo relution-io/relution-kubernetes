@@ -226,6 +226,7 @@ s2s:
     iptables: "1.8.10-3ubuntu2"
   livenessProbe:
     enabled: true
+  logLevel: 1
   psk: ""
   ike:
     proposals: sha512-aes256-ecp384
@@ -235,5 +236,6 @@ s2s:
     ip: ""
     subnets: []
   local:
+    id: relution
     nat: ""
     transferSubnet: ""

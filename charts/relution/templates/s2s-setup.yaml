@@ -24,6 +24,13 @@ data:
       start-scripts {
         autoload = /opt/s2s/autoload.sh
       }
+
+      filelog {
+        stdout {
+          default = {{ .Values.s2s.logLevel | default 1 }}
+          enc = {{ .Values.s2s.logLevel | default 1 }}
+        }
+      }
     }
   autoload.sh: |
     #!/bin/bash -e
