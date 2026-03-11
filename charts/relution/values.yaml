@@ -234,8 +234,10 @@ s2s:
   psk: ""
   ike:
     proposals: sha512-aes256-ecp384
+    rekeyTime: "4h"
   ipsec:
     proposals: sha512-aes256-ecp384
+    rekeyTime: "1h"
     startAction: start
     closeAction: start
     dpdAction: restart

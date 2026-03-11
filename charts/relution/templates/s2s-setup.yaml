@@ -39,6 +39,7 @@ data:
         remote_addrs = {{ required "s2s.remote.ip is required." .Values.s2s.remote.ip }}
         version      = 2
         proposals    = {{ .Values.s2s.ike.proposals }}
+        rekey_time   = {{ .Values.s2s.ike.rekeyTime | default "4h" }}
 
         local {
           id   = {{ .Values.s2s.local.id | default "relution" }}
@@ -57,6 +58,7 @@ data:
             dpd_action    = {{ .Values.s2s.ipsec.dpdAction | default "restart" }}
             updown        = /usr/lib/ipsec/_updown iptables
             esp_proposals = {{ .Values.s2s.ipsec.proposals }}
+            rekey_time    = {{ .Values.s2s.ipsec.rekeyTime | default "1h" }}
           }
         }
       }
