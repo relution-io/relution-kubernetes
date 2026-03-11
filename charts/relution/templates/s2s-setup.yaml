@@ -11,6 +11,7 @@ data:
     apt-get update && apt-get install -y \
       strongswan={{ .Values.s2s.packages.strongswan }} \
       strongswan-swanctl={{ .Values.s2s.packages.strongswan }} \
+      libstrongswan-extra-plugins={{ .Values.s2s.packages.strongswan }} \
       iptables={{ .Values.s2s.packages.iptables }};
 
     {{- range .Values.s2s.remote.subnets }}
@@ -29,6 +30,34 @@ data:
         stdout {
           default = {{ .Values.s2s.logLevel | default 1 }}
           enc = {{ .Values.s2s.logLevel | default 1 }}
+        }
+      }
+    }
+  s2s.conf: |
+    connections {
+      gw-gw {
+        remote_addrs = {{ required "s2s.remote.ip is required." .Values.s2s.remote.ip }}
+        version      = 2
+        proposals    = {{ .Values.s2s.ike.proposals }}
+
+        local {
+          id   = {{ .Values.s2s.local.id | default "relution" }}
+          auth = psk
+        }
+        remote {
+          auth = psk
+        }
+
+        children {
+          net-net {
+            local_ts      = {{ required "s2s.local.transferSubnet is required." .Values.s2s.local.transferSubnet }}
+            remote_ts     = {{ join "," .Values.s2s.remote.subnets }}
+            start_action  = {{ .Values.s2s.ipsec.startAction | default "start" }}
+            close_action  = {{ .Values.s2s.ipsec.closeAction | default "start" }}
+            dpd_action    = {{ .Values.s2s.ipsec.dpdAction | default "restart" }}
+            updown        = /usr/lib/ipsec/_updown iptables
+            esp_proposals = {{ .Values.s2s.ipsec.proposals }}
+          }
         }
       }
     }
