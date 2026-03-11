@@ -104,12 +104,19 @@ spec:
           command: [ "/bin/bash", "-c", "/opt/s2s/entrypoint.sh" ]
           {{- if .Values.s2s.livenessProbe.enabled }}
           livenessProbe:
-            initialDelaySeconds: 30
+            initialDelaySeconds: {{ .Values.s2s.livenessProbe.initialDelaySeconds | default 30 }}
+            periodSeconds: {{ .Values.s2s.livenessProbe.periodSeconds | default 10 }}
+            timeoutSeconds: {{ .Values.s2s.livenessProbe.timeoutSeconds | default 5 }}
+            failureThreshold: {{ .Values.s2s.livenessProbe.failureThreshold | default 5 }}
             exec:
               command: [ "/bin/bash", "-c", "/opt/s2s/health.sh" ]
           {{- end }}
           volumeMounts:
-            - name: s2s-strongswan-config
+            - name: s2s-strongswan-secrets
+              mountPath: "/etc/swanctl/conf.d/s2s-secrets.conf"
+              subPath: s2s-secrets.conf
+              readOnly: true
+            - name: s2s-setup
               mountPath: "/etc/swanctl/conf.d/s2s.conf"
               subPath: s2s.conf
               readOnly: true
@@ -250,9 +257,9 @@ spec:
           {{- end }}
       {{- end }}
       {{- if .Values.s2s.enabled }}
-        - name: s2s-strongswan-config
+        - name: s2s-strongswan-secrets
           secret:
-            secretName: {{ include "relution.fullname" . }}-s2s-strongswan-config
+            secretName: {{ include "relution.fullname" . }}-s2s-strongswan-secrets
         - name: s2s-setup
           configMap:
             name: {{ include "relution.fullname" . }}-s2s-setup
