@@ -216,7 +216,7 @@ networkPolicy:
 s2s:
   enabled: false
   image:
-    repository: harbor.mway.io/relution/s2s-docker
+    repository: relution/s2s-docker
     pullPolicy: IfNotPresent
     tag: "1.0.0"
   livenessProbe:
