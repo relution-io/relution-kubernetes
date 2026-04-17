@@ -119,7 +119,11 @@ networkPolicy:
             cidr: "0.0.0.0/0"
 
 s2s:
-  enabled: false
+  enabled: true
+  image:
+    repository: ubuntu
+    pullPolicy: IfNotPresent
+    tag: "24.04"
   livenessProbe:
     enabled: false
   psk: "sharedsecret"
