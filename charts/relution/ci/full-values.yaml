@@ -119,7 +119,7 @@ networkPolicy:
             cidr: "0.0.0.0/0"
 
 s2s:
-  enabled: true
+  enabled: false
   livenessProbe:
     enabled: false
   psk: "sharedsecret"

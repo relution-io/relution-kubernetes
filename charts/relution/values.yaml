@@ -216,14 +216,9 @@ networkPolicy:
 s2s:
   enabled: false
   image:
-    repository: ubuntu
+    repository: harbor.mway.io/relution/s2s-docker
     pullPolicy: IfNotPresent
-    tag: "24.04"
-  packages:
-    # renovate: suite=noble depName=strongswan
-    strongswan: "5.9.13-2ubuntu4.24.04.2"
-    # renovate: suite=noble depName=iptables
-    iptables: "1.8.10-3ubuntu2"
+    tag: "1.0.0"
   livenessProbe:
     enabled: true
     initialDelaySeconds: 30
