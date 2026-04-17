@@ -120,10 +120,6 @@ networkPolicy:
 
 s2s:
   enabled: true
-  image:
-    repository: ubuntu
-    pullPolicy: IfNotPresent
-    tag: "24.04"
   livenessProbe:
     enabled: false
   psk: "sharedsecret"
