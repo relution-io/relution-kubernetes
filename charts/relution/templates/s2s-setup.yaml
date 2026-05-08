@@ -62,25 +62,41 @@ data:
     swanctl --load-all;
   health.sh: |
     #!/bin/bash -e
+
+    print_msg() {
+      UP=$1
+      MSG=$2
+
+      echo "up=$UP" > /opt/s2s/health/health.txt
+      echo "msg='$MSG'" >> /opt/s2s/health/health.txt
+      if [ "$UP" == "0" ]; then
+        // print to stdout of primary process to be visible in logs
+        echo "$MSG" > /proc/1/fd/1
+      fi
+    }
+
     OUTPUT=$(swanctl --list-sas 2>/dev/null)
 
     if [[ -z "$OUTPUT" ]]; then
-      echo "CRITICAL: No IKE SAs found (swanctl returned nothing)."
-      exit 1
+      print_msg 0 "CRITICAL: No IKE SAs found (swanctl returned nothing)."
+      swanctl --initiate --child net-net || true
+      exit 0
     fi
 
     # Check for an established IKE SA
     if ! grep -q "ESTABLISHED" <<< "$OUTPUT"; then
-      echo "CRITICAL: No established IKE SA found."
-      exit 1
+      print_msg 0 "CRITICAL: No established IKE SA found."
+      swanctl --initiate --child net-net || true
+      exit 0
     fi
 
     # Check for an installed ESP SA
     if ! grep -q "INSTALLED" <<< "$OUTPUT"; then
-      echo "CRITICAL: No installed ESP SA found."
-      exit 1
+      print_msg 0 "CRITICAL: No installed ESP SA found."
+      swanctl --initiate --child net-net || true
+      exit 0
     fi
 
-    echo "OK: Tunnel is established."
+    print_msg 1 "OK: Tunnel is established."
     exit 0
 {{- end }}

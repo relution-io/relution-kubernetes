@@ -136,6 +136,9 @@ spec:
               mountPath: "/opt/s2s/health.sh"
               subPath: health.sh
               readOnly: true
+            - name: s2s-health
+              mountPath: "/opt/s2s/health"
+              subPath: health.txt
         {{- end }}
         {{- with .Values.additionalSidecarContainers }}
         {{ toYaml . | nindent 8 }}
@@ -163,6 +166,12 @@ spec:
             - name: imagemagick
               mountPath: /root/.config/ImageMagick/policy.xml
               subPath: security-policy.xml
+          {{- end }}
+          {{- if .Values.s2s.enabled }}
+            - name: s2s-health
+              mountPath: "/opt/s2s/health"
+              subPath: health.txt
+              readOnly: true
           {{- end }}
           {{- if .Values.heapDumpExporter.enabled }}
             - name: heap-dumps
@@ -264,6 +273,8 @@ spec:
           configMap:
             name: {{ include "relution.fullname" . }}-s2s-setup
             defaultMode: 500
+        - name: s2s-health
+          emptyDir: {}
       {{- end }}
       {{- if .Values.additionalVolumes }}
         {{- toYaml .Values.additionalVolumes | nindent 8 }}
