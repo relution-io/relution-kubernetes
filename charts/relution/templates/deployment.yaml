@@ -80,8 +80,7 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
           - |
-            amazon-linux-extras install -y epel &&
-            yum install -y inotify-tools &&
+            dnf install -y inotify-tools &&
             echo "Listening for changes in directory '{{ .Values.heapDumpExporter.directory }}'..." &&
             inotifywait -m {{ .Values.heapDumpExporter.directory }} -e close_write | while read path action file; do aws s3 --endpoint-url {{ .Values.heapDumpExporter.s3.endpointUrl }} cp "$path$file" "s3://{{ required "heapDumpExporter.s3.bucket is required!" .Values.heapDumpExporter.s3.bucket }}/{{ include "relution.fullname" . }}/$file"; done;
           env:
