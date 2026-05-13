@@ -70,8 +70,8 @@ data:
       echo "up=$UP" > /opt/s2s/health/health.txt
       echo "msg='$MSG'" >> /opt/s2s/health/health.txt
       if [ "$UP" == "0" ]; then
-        // print to stdout of primary process to be visible in logs
-        echo "$MSG" > /proc/1/fd/1
+        # print to stdout of primary process to be visible in logs
+        printf "$MSG\n" > /proc/1/fd/1
       fi
     }
 
