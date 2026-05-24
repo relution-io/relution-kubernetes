@@ -1,0 +1,113 @@
+{{- if .Values.smg.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "relution.fullname" . }}-smg
+  labels:
+    {{- include "relution-smg.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.smg.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "relution-smg.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- if .Values.smg.relution.config }}
+        checksum/config: {{ include (print $.Template.BasePath "/smg-config.yaml") . | sha256sum }}
+        {{- end }}
+        {{- if .Values.smg.relution.environment }}
+        checksum/environment: {{ include (print $.Template.BasePath "/smg-environment.yaml") . | sha256sum }}
+        {{- end }}
+        {{- if .Values.smg.relution.secrets }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/smg-secrets.yaml") . | sha256sum }}
+        {{- end }}
+      {{- with .Values.smg.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "relution-smg.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.smg.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "relution-smg.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.smg.podSecurityContext | nindent 8 }}
+      {{- if .Values.smg.hostAliases }}
+      hostAliases:
+        {{- toYaml .Values.smg.hostAliases | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.smg.terminationGracePeriodSeconds }}
+      containers:
+        - name: {{ .Chart.Name }}-smg
+          securityContext:
+            {{- toYaml .Values.smg.securityContext | nindent 12 }}
+          image: "{{ .Values.smg.image.repository }}:{{ .Values.smg.image.tag }}"
+          imagePullPolicy: {{ .Values.smg.image.pullPolicy }}
+          volumeMounts:
+            - name: config
+              mountPath: /opt/relution/application.yml
+              subPath: application.yml
+          {{- if or .Values.smg.relution.environment .Values.smg.relution.secrets }}
+          envFrom:
+            {{- if .Values.smg.relution.environment }}
+            - configMapRef:
+                name: {{ include "relution.fullname" . }}-smg-environment
+            {{- end }}
+            {{- if .Values.smg.relution.secrets }}
+            - secretRef:
+                name: {{ include "relution.fullname" . }}-smg-secrets
+            {{- end }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          {{- if .Values.smg.startupProbe.enabled }}
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: monitoring
+            periodSeconds: {{ .Values.smg.startupProbe.periodSeconds | default 10 }}
+            timeoutSeconds: {{ .Values.smg.startupProbe.timeoutSeconds | default 1 }}
+            failureThreshold: {{ .Values.smg.startupProbe.failureThreshold | default 30 }}
+          {{- end }}
+          {{- if .Values.smg.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: monitoring
+            periodSeconds: {{ .Values.smg.livenessProbe.periodSeconds | default 10 }}
+            timeoutSeconds: {{ .Values.smg.livenessProbe.timeoutSeconds | default 1 }}
+            failureThreshold: {{ .Values.smg.livenessProbe.failureThreshold | default 3 }}
+          {{- end }}
+          {{- if .Values.smg.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: monitoring
+            periodSeconds: {{ .Values.smg.readinessProbe.periodSeconds | default 10 }}
+            timeoutSeconds: {{ .Values.smg.readinessProbe.timeoutSeconds | default 1 }}
+            failureThreshold: {{ .Values.smg.readinessProbe.failureThreshold | default 3 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.smg.resources | nindent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "relution.fullname" . }}-smg-config
+      {{- with .Values.smg.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.smg.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.smg.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

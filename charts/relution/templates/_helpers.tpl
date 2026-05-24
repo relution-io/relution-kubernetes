@@ -60,3 +60,34 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Common labels
+*/}}
+{{- define "relution-smg.labels" -}}
+helm.sh/chart: {{ include "relution.chart" . }}
+{{ include "relution-smg.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Values.smg.image.tag | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
+{{- define "relution-smg.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "relution.name" . }}-smg
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "relution-smg.serviceAccountName" -}}
+{{- if .Values.smg.serviceAccount.create }}
+{{- default (include "relution.fullname" .) .Values.smg.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.smg.serviceAccount.name }}
+{{- end }}
+{{- end }}
