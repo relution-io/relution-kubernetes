@@ -41,6 +41,15 @@ spec:
     - host: {{ tpl .host $ | quote }}
       http:
         paths:
+          {{- if $.Values.smg.enabled }}
+          - path: /Microsoft-Server-ActiveSync
+            pathType: Exact
+            backend:
+              service:
+                name: {{ $fullName }}-smg
+                port:
+                  number: {{ $.Values.smg.service.port }}
+          {{- end }}
           {{- range .paths }}
           - path: {{ .path }}
             {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
