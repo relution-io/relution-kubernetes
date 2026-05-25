@@ -13,14 +13,14 @@ spec:
   template:
     metadata:
       annotations:
-        {{- if .Values.smg.relution.config }}
-        checksum/config: {{ include (print $.Template.BasePath "/smg-config.yaml") . | sha256sum }}
+        {{- if .Values.smg.app.config }}
+        checksum/config: {{ include (print $.Template.BasePath "/smg/smg-config.yaml") . | sha256sum }}
         {{- end }}
-        {{- if .Values.smg.relution.environment }}
-        checksum/environment: {{ include (print $.Template.BasePath "/smg-environment.yaml") . | sha256sum }}
+        {{- if .Values.smg.app.environment }}
+        checksum/environment: {{ include (print $.Template.BasePath "/smg/smg-environment.yaml") . | sha256sum }}
         {{- end }}
-        {{- if .Values.smg.relution.secrets }}
-        checksum/secrets: {{ include (print $.Template.BasePath "/smg-secrets.yaml") . | sha256sum }}
+        {{- if .Values.smg.app.secrets }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/smg/smg-secrets.yaml") . | sha256sum }}
         {{- end }}
       {{- with .Values.smg.podAnnotations }}
         {{- toYaml . | nindent 8 }}
@@ -48,28 +48,28 @@ spec:
           imagePullPolicy: {{ .Values.smg.image.pullPolicy }}
           volumeMounts:
             - name: config
-              mountPath: /opt/relution/application.yml
+              mountPath: /opt/app/application.yml
               subPath: application.yml
-          {{- if or .Values.smg.relution.environment .Values.smg.relution.secrets }}
+          {{- if or .Values.smg.app.environment .Values.smg.app.secrets }}
           envFrom:
-            {{- if .Values.smg.relution.environment }}
+            {{- if .Values.smg.app.environment }}
             - configMapRef:
                 name: {{ include "relution.fullname" . }}-smg-environment
             {{- end }}
-            {{- if .Values.smg.relution.secrets }}
+            {{- if .Values.smg.app.secrets }}
             - secretRef:
                 name: {{ include "relution.fullname" . }}-smg-secrets
             {{- end }}
           {{- end }}
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 8093
               protocol: TCP
           {{- if .Values.smg.startupProbe.enabled }}
           startupProbe:
             httpGet:
               path: /actuator/health
-              port: monitoring
+              port: http
             periodSeconds: {{ .Values.smg.startupProbe.periodSeconds | default 10 }}
             timeoutSeconds: {{ .Values.smg.startupProbe.timeoutSeconds | default 1 }}
             failureThreshold: {{ .Values.smg.startupProbe.failureThreshold | default 30 }}
@@ -78,7 +78,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
-              port: monitoring
+              port: http
             periodSeconds: {{ .Values.smg.livenessProbe.periodSeconds | default 10 }}
             timeoutSeconds: {{ .Values.smg.livenessProbe.timeoutSeconds | default 1 }}
             failureThreshold: {{ .Values.smg.livenessProbe.failureThreshold | default 3 }}
@@ -87,7 +87,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
-              port: monitoring
+              port: http
             periodSeconds: {{ .Values.smg.readinessProbe.periodSeconds | default 10 }}
             timeoutSeconds: {{ .Values.smg.readinessProbe.timeoutSeconds | default 1 }}
             failureThreshold: {{ .Values.smg.readinessProbe.failureThreshold | default 3 }}

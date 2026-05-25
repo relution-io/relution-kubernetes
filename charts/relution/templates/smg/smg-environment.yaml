@@ -1,4 +1,4 @@
-{{- if .Values.smg.relution.environment }}
+{{- if .Values.smg.app.environment }}
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "relution.labels" . | nindent 4 }}
 data:
-  {{- range $key, $val := .Values.smg.relution.environment }}
+  {{- range $key, $val := .Values.smg.app.environment }}
   {{ $key }}: {{ $val | quote }}
   {{- end }}
 {{- end }}

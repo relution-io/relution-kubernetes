@@ -16,7 +16,17 @@ spec:
   routes:
     {{- if $.Values.smg.enabled }}
     - kind: Rule
-      match: "Path(/Microsoft-Server-ActiveSync)"
+      {{- with .Values.ingressRoute.defaultRoute }}
+      {{- if .match }}
+      match: "{{ tpl .match $ }} && Path(`/Microsoft-Server-ActiveSync`)"
+      {{- else if .hosts }}
+      match: "(Host(`{{ tpl (index .hosts 0) $ }}`)
+            {{- range (slice .hosts 1) }} || Host(`{{ tpl . $ }}`)
+            {{- end}}) && Path(`/Microsoft-Server-ActiveSync`)"
+      {{- else }}
+      match: "Host(`{{ tpl .host $ }}`) && Path(`/Microsoft-Server-ActiveSync`)"
+      {{- end }}
+      {{- end }}
       services:
         - kind: Service
           name: {{ $fullName }}-smg

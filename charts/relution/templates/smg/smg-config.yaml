@@ -6,4 +6,4 @@ metadata:
     {{- include "relution.labels" . | nindent 4 }}
 data:
   application.yml: |
-    {{- toYaml .Values.smg.relution.config | nindent 4 }}
+    {{- toYaml .Values.smg.app.config | nindent 4 }}

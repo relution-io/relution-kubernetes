@@ -300,7 +300,7 @@ smg:
 
   affinity: {}
 
-  relution:
+  app:
     config: {}
     environment: {}
     secrets: {}
