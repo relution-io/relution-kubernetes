@@ -1,3 +1,5 @@
+{{- $fixedConfig := dict "relution" (dict "server" (dict "url" (printf "http://%s:%v" (include "relution.fullname" .) .Values.service.port))) -}}
+{{- $config := mergeOverwrite (deepCopy .Values.smg.app.config) $fixedConfig -}}
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -6,4 +8,4 @@ metadata:
     {{- include "relution.labels" . | nindent 4 }}
 data:
   application.yml: |
-    {{- toYaml .Values.smg.app.config | nindent 4 }}
+    {{- toYaml $config | nindent 4 }}
