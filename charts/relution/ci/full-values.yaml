@@ -140,3 +140,7 @@ smg:
       relution:
         server:
           apiKey: test
+    environment:
+      RELUTION_SMG_FOO: bar
+    secrets:
+      RELUTION_SERVER_APIKEY: test
