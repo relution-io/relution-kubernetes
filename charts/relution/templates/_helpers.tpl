@@ -86,7 +86,7 @@ Create the name of the service account to use
 */}}
 {{- define "relution-smg.serviceAccountName" -}}
 {{- if .Values.smg.serviceAccount.create }}
-{{- default (include "relution.fullname" .) .Values.smg.serviceAccount.name }}
+{{- default (printf "%s-smg" (include "relution.fullname" .)) .Values.smg.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.smg.serviceAccount.name }}
 {{- end }}
