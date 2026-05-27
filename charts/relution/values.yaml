@@ -248,9 +248,9 @@ smg:
   replicaCount: 1
 
   image:
-    repository: harbor.mway.io/relution/relution-smg-standalone
+    repository: relution/relution-smg-standalone
     pullPolicy: IfNotPresent
-    tag: "latest"
+    tag: "26.0.0"
 
   imagePullSecrets: []
 
