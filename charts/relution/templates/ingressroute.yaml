@@ -17,15 +17,7 @@ spec:
     {{- if $.Values.smg.enabled }}
     - kind: Rule
       {{- with .Values.ingressRoute.defaultRoute }}
-      {{- if .match }}
-      match: "{{ tpl .match $ }} && Path(`/Microsoft-Server-ActiveSync`)"
-      {{- else if .hosts }}
-      match: "(Host(`{{ tpl (index .hosts 0) $ }}`)
-            {{- range (slice .hosts 1) }} || Host(`{{ tpl . $ }}`)
-            {{- end}}) && Path(`/Microsoft-Server-ActiveSync`)"
-      {{- else }}
-      match: "Host(`{{ tpl .host $ }}`) && Path(`/Microsoft-Server-ActiveSync`)"
-      {{- end }}
+      match: "({{ include "relution.ingressRoute.defaultRouteMatch" $ }}) && Path(`/Microsoft-Server-ActiveSync`)"
       {{- end }}
       services:
         - kind: Service
@@ -36,15 +28,7 @@ spec:
     {{- with .Values.ingressRoute.defaultRoute }}
     {{- if .enabled }}
     - kind: Rule
-      {{- if .match }}
-      match: {{ tpl .match $ | quote }}
-      {{- else if .hosts }}
-      match: "Host(`{{ tpl (index .hosts 0) $ }}`)
-            {{- range (slice .hosts 1) }} || Host(`{{ tpl . $ }}`)
-            {{- end}}"
-      {{- else }}
-      match: "Host(`{{ tpl .host $ }}`)"
-      {{- end}}
+      match: {{ include "relution.ingressRoute.defaultRouteMatch" $ | quote }}
       {{- with .middlewares }}
       middlewares:
       {{- range . }}

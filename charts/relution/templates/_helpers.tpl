@@ -91,3 +91,20 @@ Create the name of the service account to use
 {{- default "default" .Values.smg.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Render the ingressRoute.defaultRoute match expression without route-specific path filters.
+*/}}
+{{- define "relution.ingressRoute.defaultRouteMatch" -}}
+{{- $root := . -}}
+{{- $route := .Values.ingressRoute.defaultRoute -}}
+{{- if $route.match -}}
+{{ tpl $route.match $root }}
+{{- else if $route.hosts -}}
+Host(`{{ tpl (index $route.hosts 0) $root }}`)
+{{- range (slice $route.hosts 1) }} || Host(`{{ tpl . $root }}`)
+{{- end -}}
+{{- else -}}
+Host(`{{ tpl $route.host $root }}`)
+{{- end -}}
+{{- end }}

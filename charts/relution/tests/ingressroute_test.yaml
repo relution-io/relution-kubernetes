@@ -1,12 +1,82 @@
 suite: test ingressroute
-values:
-  - ../ci/ingressroute-hosts.yaml
 templates:
   - ingressroute.yaml
 tests:
-  - it: should work
+  - it: should use defaultRoute.host
+    set:
+      ingressRoute.enabled: true
+      ingressRoute.defaultRoute.host: test.relution.io
+    asserts:
+      - template: ingressroute.yaml
+        equal:
+          path: spec.routes[0].match
+          value: "Host(`test.relution.io`)"
+
+  - it: should use defaultRoute.hosts
+    set:
+      ingressRoute.enabled: true
+      ingressRoute.defaultRoute.hosts:
+        - test.relution.io
+        - test.eu.relution.io
     asserts:
       - template: ingressroute.yaml
         equal:
           path: spec.routes[0].match
           value: "Host(`test.relution.io`) || Host(`test.eu.relution.io`)"
+
+  - it: should use defaultRoute.match
+    set:
+      ingressRoute.enabled: true
+      ingressRoute.defaultRoute.match: "Host(`test.relution.io`) && PathPrefix(`/relution`)"
+    asserts:
+      - template: ingressroute.yaml
+        equal:
+          path: spec.routes[0].match
+          value: "Host(`test.relution.io`) && PathPrefix(`/relution`)"
+
+  - it: should add the SMG ActiveSync route for defaultRoute.host
+    set:
+      ingressRoute.enabled: true
+      ingressRoute.defaultRoute.host: test.relution.io
+      smg.enabled: true
+    asserts:
+      - template: ingressroute.yaml
+        equal:
+          path: spec.routes[0].match
+          value: "(Host(`test.relution.io`)) && Path(`/Microsoft-Server-ActiveSync`)"
+      - template: ingressroute.yaml
+        equal:
+          path: spec.routes[1].match
+          value: "Host(`test.relution.io`)"
+
+  - it: should add the SMG ActiveSync route for defaultRoute.hosts
+    set:
+      ingressRoute.enabled: true
+      ingressRoute.defaultRoute.hosts:
+        - test.relution.io
+        - test.eu.relution.io
+      smg.enabled: true
+    asserts:
+      - template: ingressroute.yaml
+        equal:
+          path: spec.routes[0].match
+          value: "(Host(`test.relution.io`) || Host(`test.eu.relution.io`)) && Path(`/Microsoft-Server-ActiveSync`)"
+      - template: ingressroute.yaml
+        equal:
+          path: spec.routes[1].match
+          value: "Host(`test.relution.io`) || Host(`test.eu.relution.io`)"
+
+  - it: should add the SMG ActiveSync route for defaultRoute.match
+    set:
+      ingressRoute.enabled: true
+      ingressRoute.defaultRoute.match: "Host(`test.relution.io`) && PathPrefix(`/relution`)"
+      smg.enabled: true
+    asserts:
+      - template: ingressroute.yaml
+        equal:
+          path: spec.routes[0].match
+          value: "(Host(`test.relution.io`) && PathPrefix(`/relution`)) && Path(`/Microsoft-Server-ActiveSync`)"
+      - template: ingressroute.yaml
+        equal:
+          path: spec.routes[1].match
+          value: "Host(`test.relution.io`) && PathPrefix(`/relution`)"
