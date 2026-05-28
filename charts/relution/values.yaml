@@ -243,3 +243,64 @@ s2s:
     id: relution
     nat: ""
     transferSubnet: ""
+
+smg:
+  replicaCount: 1
+
+  image:
+    repository: relution/relution-smg-standalone
+    pullPolicy: IfNotPresent
+    tag: "26.0.0"
+
+  imagePullSecrets: []
+
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: ""
+
+  podAnnotations: {}
+
+  podSecurityContext: {}
+
+  securityContext: {}
+
+  hostAliases: []
+
+  terminationGracePeriodSeconds: 30
+
+  service:
+    type: ClusterIP
+    port: 80
+    annotations: {}
+
+  startupProbe:
+    enabled: true
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 30
+
+  readinessProbe:
+    enabled: true
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 3
+
+  livenessProbe:
+    enabled: true
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 3
+
+  resources: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  app:
+    config: {}
+    environment: {}
+    secrets: {}

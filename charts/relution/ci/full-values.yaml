@@ -132,3 +132,15 @@ s2s:
   local:
     nat: 10.10.10.10
     transferSubnet: 10.10.10.10/32
+
+smg:
+  enabled: true
+  app:
+    config:
+      relution:
+        server:
+          apiKey: test
+    environment:
+      RELUTION_SMG_FOO: bar
+    secrets:
+      RELUTION_SERVER_APIKEY: test

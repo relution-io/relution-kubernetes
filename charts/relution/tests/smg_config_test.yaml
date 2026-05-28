@@ -1,0 +1,40 @@
+suite: test smg config
+templates:
+  - smg/smg-config.yaml
+tests:
+  - it: should add the relution service URL
+    set:
+      fullnameOverride: relution-test
+      service.port: 8080
+      smg.app.config:
+        custom:
+          value: preserved
+    asserts:
+      - isKind:
+          of: ConfigMap
+      - matchRegex:
+          path: data["application.yml"]
+          pattern: "url: http://relution-test:8080"
+      - matchRegex:
+          path: data["application.yml"]
+          pattern: "value: preserved"
+
+  - it: should override user supplied relution service URL
+    set:
+      fullnameOverride: relution-test
+      service.port: 80
+      smg.app.config:
+        relution:
+          server:
+            url: http://user-supplied.example
+            other: preserved
+    asserts:
+      - matchRegex:
+          path: data["application.yml"]
+          pattern: "url: http://relution-test:80"
+      - notMatchRegex:
+          path: data["application.yml"]
+          pattern: "user-supplied"
+      - matchRegex:
+          path: data["application.yml"]
+          pattern: "other: preserved"

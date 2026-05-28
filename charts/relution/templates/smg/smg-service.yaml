@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "relution.fullname" . }}-smg
+  labels:
+    {{- include "relution.labels" . | nindent 4 }}
+  {{- with .Values.smg.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.smg.service.type }}
+  ports:
+    - port: {{ .Values.smg.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "relution-smg.selectorLabels" . | nindent 4 }}

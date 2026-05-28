@@ -14,18 +14,21 @@ metadata:
 spec:
   entryPoints: {{ toYaml .Values.ingressRoute.entryPoints | nindent 4 }}
   routes:
+    {{- if $.Values.smg.enabled }}
+    - kind: Rule
+      {{- with .Values.ingressRoute.defaultRoute }}
+      match: "({{ include "relution.ingressRoute.defaultRouteMatch" $ }}) && Path(`/Microsoft-Server-ActiveSync`)"
+      {{- end }}
+      services:
+        - kind: Service
+          name: {{ $fullName }}-smg
+          namespace: {{ $.Release.Namespace }}
+          port: {{ $.Values.smg.service.port }}
+    {{- end }}
     {{- with .Values.ingressRoute.defaultRoute }}
     {{- if .enabled }}
     - kind: Rule
-      {{- if .match }}
-      match: {{ tpl .match $ | quote }}
-      {{- else if .hosts }}
-      match: "Host(`{{ tpl (index .hosts 0) $ }}`)
-            {{- range (slice .hosts 1) }} || Host(`{{ tpl . $ }}`)
-            {{- end}}"
-      {{- else }}
-      match: "Host(`{{ tpl .host $ }}`)"
-      {{- end}}
+      match: {{ include "relution.ingressRoute.defaultRouteMatch" $ | quote }}
       {{- with .middlewares }}
       middlewares:
       {{- range . }}
