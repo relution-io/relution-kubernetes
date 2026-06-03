@@ -22,6 +22,9 @@ spec:
         {{- if .Values.smg.app.secrets }}
         checksum/secrets: {{ include (print $.Template.BasePath "/smg/smg-secrets.yaml") . | sha256sum }}
         {{- end }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8099"
+        prometheus.io/path: "/actuator/prometheus"
       {{- with .Values.smg.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -65,11 +68,14 @@ spec:
             - name: http
               containerPort: 8093
               protocol: TCP
+            - name: monitoring
+              containerPort: 8099
+              protocol: TCP
           {{- if .Values.smg.startupProbe.enabled }}
           startupProbe:
             httpGet:
               path: /actuator/health
-              port: http
+              port: monitoring
             periodSeconds: {{ .Values.smg.startupProbe.periodSeconds | default 10 }}
             timeoutSeconds: {{ .Values.smg.startupProbe.timeoutSeconds | default 1 }}
             failureThreshold: {{ .Values.smg.startupProbe.failureThreshold | default 30 }}
@@ -78,7 +84,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
-              port: http
+              port: monitoring
             periodSeconds: {{ .Values.smg.livenessProbe.periodSeconds | default 10 }}
             timeoutSeconds: {{ .Values.smg.livenessProbe.timeoutSeconds | default 1 }}
             failureThreshold: {{ .Values.smg.livenessProbe.failureThreshold | default 3 }}
@@ -87,7 +93,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
-              port: http
+              port: monitoring
             periodSeconds: {{ .Values.smg.readinessProbe.periodSeconds | default 10 }}
             timeoutSeconds: {{ .Values.smg.readinessProbe.timeoutSeconds | default 1 }}
             failureThreshold: {{ .Values.smg.readinessProbe.failureThreshold | default 3 }}
