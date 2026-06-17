@@ -22,7 +22,7 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v5
         with:
-          version: v3.14.2
+          version: v4.2.2
 
       - name: Add repositories
         run: |
