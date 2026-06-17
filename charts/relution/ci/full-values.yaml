@@ -137,18 +137,6 @@ smg:
   enabled: true
   app:
     config:
-      management:
-        server:
-          port: 8099
-          add-application-context-header: false
-        endpoint:
-          web:
-            exposure:
-              include: '*'
-          health:
-            probes:
-              enabled: true
-            show-details: always
       relution:
         server:
           apiKey: test
