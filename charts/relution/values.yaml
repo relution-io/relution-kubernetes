@@ -250,7 +250,7 @@ smg:
   image:
     repository: relution/relution-smg-standalone
     pullPolicy: IfNotPresent
-    tag: "26.0.1"
+    tag: "26.0.2"
 
   imagePullSecrets: []
 
