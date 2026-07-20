@@ -44,6 +44,20 @@ data:
         }
 
         children {
+          {{- if .Values.s2s.explodeChildren }}
+          {{- range $i, $subnet := .Values.s2s.remote.subnets }}
+          net-net-{{ $i }} {
+            local_ts      = {{ required "s2s.local.transferSubnet is required." $.Values.s2s.local.transferSubnet }}
+            remote_ts     = {{ $subnet }}
+            start_action  = {{ $.Values.s2s.ipsec.startAction | default "start" }}
+            close_action  = {{ $.Values.s2s.ipsec.closeAction | default "start" }}
+            dpd_action    = {{ $.Values.s2s.ipsec.dpdAction | default "restart" }}
+            updown        = /usr/lib/ipsec/_updown iptables
+            esp_proposals = {{ $.Values.s2s.ipsec.proposals }}
+            rekey_time    = {{ $.Values.s2s.ipsec.rekeyTime | default "1h" }}
+          }
+          {{- end }}
+          {{- else }}
           net-net {
             local_ts      = {{ required "s2s.local.transferSubnet is required." .Values.s2s.local.transferSubnet }}
             remote_ts     = {{ join "," .Values.s2s.remote.subnets }}
@@ -54,6 +68,7 @@ data:
             esp_proposals = {{ .Values.s2s.ipsec.proposals }}
             rekey_time    = {{ .Values.s2s.ipsec.rekeyTime | default "1h" }}
           }
+          {{- end }}
         }
       }
     }
@@ -62,6 +77,16 @@ data:
     swanctl --load-all;
   health.sh: |
     #!/bin/bash -e
+
+    initiate_children() {
+      {{- if .Values.s2s.explodeChildren }}
+      {{- range $i, $subnet := .Values.s2s.remote.subnets }}
+      swanctl --initiate --child net-net-{{ $i }} || true;
+      {{- end }}
+      {{- else }}
+      swanctl --initiate --child net-net || true;
+      {{- end }}
+    }
 
     print_msg() {
       UP=$1
@@ -79,21 +104,21 @@ data:
 
     if [[ -z "$OUTPUT" ]]; then
       print_msg 0 "CRITICAL: No IKE SAs found (swanctl returned nothing)."
-      swanctl --initiate --child net-net || true
+      initiate_children;
       exit 0
     fi
 
     # Check for an established IKE SA
     if ! grep -q "ESTABLISHED" <<< "$OUTPUT"; then
       print_msg 0 "CRITICAL: No established IKE SA found."
-      swanctl --initiate --child net-net || true
+      initiate_children;
       exit 0
     fi
 
     # Check for an installed ESP SA
     if ! grep -q "INSTALLED" <<< "$OUTPUT"; then
       print_msg 0 "CRITICAL: No installed ESP SA found."
-      swanctl --initiate --child net-net || true
+      initiate_children;
       exit 0
     fi
 

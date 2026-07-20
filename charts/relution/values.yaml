@@ -215,6 +215,9 @@ networkPolicy:
 
 s2s:
   enabled: false
+  # Create one IPsec child SA per remote subnet instead of a single
+  # child SA covering all subnets.
+  explodeChildren: false
   image:
     repository: relution/s2s-docker
     pullPolicy: IfNotPresent
