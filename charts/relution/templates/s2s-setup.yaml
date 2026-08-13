@@ -79,14 +79,14 @@ data:
     #!/bin/bash -e
 
     initiate_children() {
-      swanctl --terminate --ike gw-gw;
+      swanctl --terminate --ike gw-gw || true;
       {{- if .Values.s2s.explodeChildren }}
       {{- range $i, $subnet := .Values.s2s.remote.subnets }}
       swanctl --terminate --child net-net-{{ $i }} || true;
       swanctl --initiate --child net-net-{{ $i }} || true;
       {{- end }}
       {{- else }}
-      swanctl --terminate --child net-net;
+      swanctl --terminate --child net-net || true;
       swanctl --initiate --child net-net || true;
       {{- end }}
     }
