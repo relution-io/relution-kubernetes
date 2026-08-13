@@ -79,11 +79,14 @@ data:
     #!/bin/bash -e
 
     initiate_children() {
+      swanctl --terminate --ike gw-gw || true;
       {{- if .Values.s2s.explodeChildren }}
       {{- range $i, $subnet := .Values.s2s.remote.subnets }}
+      swanctl --terminate --child net-net-{{ $i }} || true;
       swanctl --initiate --child net-net-{{ $i }} || true;
       {{- end }}
       {{- else }}
+      swanctl --terminate --child net-net || true;
       swanctl --initiate --child net-net || true;
       {{- end }}
     }
@@ -121,6 +124,15 @@ data:
       initiate_children;
       exit 0
     fi
+
+    {{- if .Values.s2s.healthcheckCommand }}
+    # Run the custom health check command through the tunnel
+    if ! HC_OUTPUT=$({{ .Values.s2s.healthcheckCommand }} 2>&1); then
+      print_msg 0 "CRITICAL: Health check command failed: $HC_OUTPUT"
+      initiate_children;
+      exit 0
+    fi
+    {{- end }}
 
     print_msg 1 "OK: Tunnel is established."
     exit 0

@@ -218,6 +218,9 @@ s2s:
   # Create one IPsec child SA per remote subnet instead of a single
   # child SA covering all subnets.
   explodeChildren: false
+  # Optional command executed by the health check script after the SA checks.
+  # If it fails, its output is logged and the tunnel is reinitiated.
+  healthcheckCommand: ""
   image:
     repository: relution/s2s-docker
     pullPolicy: IfNotPresent
