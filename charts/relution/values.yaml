@@ -224,7 +224,7 @@ s2s:
   image:
     repository: relution/s2s-docker
     pullPolicy: IfNotPresent
-    tag: "1.0.0"
+    tag: "1.1.0"
   livenessProbe:
     enabled: true
     initialDelaySeconds: 30
