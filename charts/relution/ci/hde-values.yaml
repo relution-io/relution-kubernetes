@@ -27,10 +27,5 @@ mariadb:
     database: relution
 
 heapDumpExporter:
-  enabled: true
-  persistence:
-    enabled: false
-  s3:
-    bucket: s3://test-relution-io
-    awsAccessKeyId: relution
-    awsSecretAccessKey: relution
+  hostPath:
+    enabled: true
