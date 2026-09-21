@@ -147,7 +147,6 @@ spec:
           {{- if .Values.additionalVolumeMounts }}
             {{- toYaml .Values.additionalVolumeMounts | nindent 12 }}
           {{- end }}
-          {{- end }}
           env:
             - name: POD_NAME
               valueFrom:
