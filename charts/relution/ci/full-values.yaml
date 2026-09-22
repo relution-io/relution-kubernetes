@@ -86,15 +86,6 @@ livenessProbe:
 autoscaling:
   enabled: true
 
-heapDumpExporter:
-  enabled: true
-  persistence:
-    enabled: true
-  s3:
-    bucket: s3://test-relution-io
-    awsAccessKeyId: relution
-    awsSecretAccessKey: relution
-
 mariadb:
   enabled: true
   fullnameOverride: mariadb

@@ -12,10 +12,6 @@ spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
-  {{- if and .Values.heapDumpExporter.enabled .Values.heapDumpExporter.persistence.enabled }}
-  strategy:
-    type: Recreate
-  {{- end }}
   selector:
     matchLabels:
       {{- include "relution.selectorLabels" . | nindent 6 }}
@@ -59,38 +55,10 @@ spec:
         {{- toYaml .Values.hostAliases | nindent 8 }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
-      {{- if or (or (or .Values.heapDumpExporter.enabled .Values.s2s.enabled) .Values.additionalInitContainers) .Values.additionalSidecarContainers }}
+      {{- if or (or .Values.s2s.enabled .Values.additionalInitContainers) .Values.additionalSidecarContainers }}
       initContainers:
         {{- with .Values.additionalInitContainers }}
         {{ toYaml . | nindent 8 }}
-        {{- end }}
-        {{- if .Values.heapDumpExporter.enabled }}
-        - name: volume-permission
-          image: busybox:1.28
-          command: ["/bin/sh", "-c"]
-          args:
-            - chmod -R 777 {{ .Values.heapDumpExporter.directory }}
-          volumeMounts:
-            - name: heap-dumps
-              mountPath: {{ .Values.heapDumpExporter.directory }}
-        - name: heap-dump-exporter
-          image: "{{ .Values.heapDumpExporter.image.repository }}:{{ .Values.heapDumpExporter.image.tag }}"
-          imagePullPolicy: {{ .Values.heapDumpExporter.image.pullPolicy }}
-          restartPolicy: Always
-          command: ["/bin/sh", "-c"]
-          args:
-          - |
-            dnf install -y inotify-tools &&
-            echo "Listening for changes in directory '{{ .Values.heapDumpExporter.directory }}'..." &&
-            inotifywait -m {{ .Values.heapDumpExporter.directory }} -e close_write | while read path action file; do aws s3 --endpoint-url {{ .Values.heapDumpExporter.s3.endpointUrl }} cp "$path$file" "s3://{{ required "heapDumpExporter.s3.bucket is required!" .Values.heapDumpExporter.s3.bucket }}/{{ include "relution.fullname" . }}/$file"; done;
-          env:
-            - name: "AWS_ACCESS_KEY_ID"
-              value: {{ required "heapDumpExporter.s3.awsAccessKeyId is required!" .Values.heapDumpExporter.s3.awsAccessKeyId }}
-            - name: "AWS_SECRET_ACCESS_KEY"
-              value: {{ required "heapDumpExporter.s3.awsSecretAccessKey is required!" .Values.heapDumpExporter.s3.awsSecretAccessKey }}
-          volumeMounts:
-            - name: heap-dumps
-              mountPath: {{ .Values.heapDumpExporter.directory }}
         {{- end }}
         {{- if .Values.s2s.enabled }}
         - name: "s2s"
@@ -149,7 +117,6 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if or (or .Values.relution.config .Values.heapDumpExporter.enabled) .Values.additionalVolumeMounts }}
           volumeMounts:
           {{- if .Values.relution.config }}
             - name: config
@@ -172,23 +139,25 @@ spec:
               subPath: health.txt
               readOnly: true
           {{- end }}
-          {{- if .Values.heapDumpExporter.enabled }}
             - name: heap-dumps
               mountPath: {{ .Values.heapDumpExporter.directory }}
-          {{- end }}
+              {{- if .Values.heapDumpExporter.hostPath.enabled }}
+              subPathExpr: $(POD_NAME)
+              {{- end }}
           {{- if .Values.additionalVolumeMounts }}
             {{- toYaml .Values.additionalVolumeMounts | nindent 12 }}
           {{- end }}
-          {{- end }}
-          {{- if or .Values.relution.preRunScript .Values.relution.existingSecretRefs }}
           env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
           {{- if .Values.relution.preRunScript }}
             - name: RELUTION_PRERUN_SCRIPT
               value: /opt/relution/prerun.sh
           {{- end }}
           {{- if .Values.relution.existingSecretRefs }}
             {{- toYaml .Values.relution.existingSecretRefs | nindent 12 }}
-          {{- end }}
           {{- end }}
           {{- if or .Values.relution.environment .Values.relution.secrets }}
           envFrom:
@@ -237,7 +206,6 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- if or (or .Values.relution.config .Values.heapDumpExporter.enabled) .Values.additionalVolumes }}
       volumes:
       {{- if .Values.relution.config }}
         - name: config
@@ -255,15 +223,15 @@ spec:
           configMap:
             name: {{ include "relution.fullname" . }}-imagemagick
       {{- end }}
-      {{- if .Values.heapDumpExporter.enabled }}
         - name: heap-dumps
-          {{- if .Values.heapDumpExporter.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ include "relution.fullname" . }}-heap-dump-exporter
+          {{- if .Values.heapDumpExporter.hostPath.enabled }}
+          hostPath:
+            path: "/tmp/heapdumps"
+            type: DirectoryOrCreate
           {{- else }}
-          emptyDir: {}
+          emptyDir:
+            sizeLimit: {{ .Values.heapDumpExporter.emptyDir.sizeLimit }}
           {{- end }}
-      {{- end }}
       {{- if .Values.s2s.enabled }}
         - name: s2s-strongswan-secrets
           secret:
@@ -277,7 +245,6 @@ spec:
       {{- end }}
       {{- if .Values.additionalVolumes }}
         {{- toYaml .Values.additionalVolumes | nindent 8 }}
-      {{- end }}
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
