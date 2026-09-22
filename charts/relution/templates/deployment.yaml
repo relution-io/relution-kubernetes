@@ -60,6 +60,17 @@ spec:
         {{- with .Values.additionalInitContainers }}
         {{ toYaml . | nindent 8 }}
         {{- end }}
+        - name: volume-permission
+          image: busybox:1.38
+          command: ["/bin/sh", "-c"]
+          args:
+            - chown -R 20001:20001 {{ .Values.heapDumpExporter.directory }}
+          volumeMounts:
+            - name: heap-dumps
+              mountPath: {{ .Values.heapDumpExporter.directory }}
+              {{- if .Values.heapDumpExporter.hostPath.enabled }}
+              subPathExpr: $(POD_NAME)
+              {{- end }}
         {{- if .Values.s2s.enabled }}
         - name: "s2s"
           securityContext:
