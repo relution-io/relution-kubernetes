@@ -8,9 +8,10 @@ tests:
       service.port: 8080
       smg:
         enabled: true
-        app.config:
-          custom:
-            value: preserved
+        app:
+          config:
+            custom:
+              value: preserved
     asserts:
       - isKind:
           of: ConfigMap
@@ -27,11 +28,12 @@ tests:
       service.port: 80
       smg:
         enabled: true
-        app.config:
-          relution:
-            server:
-              url: http://user-supplied.example
-              other: preserved
+        app:
+          config:
+            relution:
+              server:
+                url: http://user-supplied.example
+                other: preserved
     asserts:
       - matchRegex:
           path: data["application.yml"]
