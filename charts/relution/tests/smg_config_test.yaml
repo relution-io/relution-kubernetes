@@ -6,9 +6,12 @@ tests:
     set:
       fullnameOverride: relution-test
       service.port: 8080
-      smg.app.config:
-        custom:
-          value: preserved
+      smg:
+        enabled: true
+        app:
+          config:
+            custom:
+              value: preserved
     asserts:
       - isKind:
           of: ConfigMap
@@ -23,11 +26,14 @@ tests:
     set:
       fullnameOverride: relution-test
       service.port: 80
-      smg.app.config:
-        relution:
-          server:
-            url: http://user-supplied.example
-            other: preserved
+      smg:
+        enabled: true
+        app:
+          config:
+            relution:
+              server:
+                url: http://user-supplied.example
+                other: preserved
     asserts:
       - matchRegex:
           path: data["application.yml"]

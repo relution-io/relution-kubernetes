@@ -1,4 +1,4 @@
-{{- if .Values.smg.app.environment }}
+{{- if and .Values.smg.enabled .Values.smg.app.environment }}
 kind: ConfigMap
 apiVersion: v1
 metadata:
