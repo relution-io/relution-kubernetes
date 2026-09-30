@@ -12,6 +12,9 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+  {{- with .Values.ingressRoute.className }}
+  ingressClassName: {{ . | quote }}
+  {{- end }}
   entryPoints: {{ toYaml .Values.ingressRoute.entryPoints | nindent 4 }}
   routes:
     {{- if $.Values.smg.enabled }}
