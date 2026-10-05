@@ -55,12 +55,12 @@ spec:
         {{- toYaml .Values.hostAliases | nindent 8 }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
-      {{- if or (or (ne (toString .Values.podSecurityContext.runAsGroup) "20001") .Values.s2s.enabled) .Values.additionalSidecarContainers }}
+      {{- if or (or (ne (toString .Values.podSecurityContext.fsGroup) "20001") .Values.s2s.enabled) .Values.additionalSidecarContainers }}
       initContainers:
         {{- with .Values.additionalInitContainers }}
         {{ toYaml . | nindent 8 }}
         {{- end }}
-      {{- if ne (toString .Values.podSecurityContext.runAsGroup) "20001" }}
+      {{- if ne (toString .Values.podSecurityContext.fsGroup) "20001" }}
         - name: volume-permission
           image: busybox:1.38
           command: ["/bin/sh", "-c"]
