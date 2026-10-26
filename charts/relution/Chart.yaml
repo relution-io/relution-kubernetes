@@ -14,7 +14,7 @@ type: application
 version: 3.6.1
 
 # renovate: image=relution/relution
-appVersion: "26.5.2"
+appVersion: "26.5.8"
 
 dependencies:
   - name: mariadb
