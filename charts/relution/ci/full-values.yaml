@@ -86,6 +86,12 @@ livenessProbe:
 autoscaling:
   enabled: true
 
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
+    maxSurge: 0
+
 mariadb:
   enabled: true
   fullnameOverride: mariadb
