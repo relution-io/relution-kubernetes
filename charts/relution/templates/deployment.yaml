@@ -12,6 +12,15 @@ spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
+  {{- with .Values.updateStrategy }}
+  strategy:
+    type: {{ .type }}
+    {{- if (eq .type "RollingUpdate") }}
+    rollingUpdate:
+      maxUnavailable: {{ .rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .rollingUpdate.maxSurge }}
+    {{- end }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "relution.selectorLabels" . | nindent 6 }}
