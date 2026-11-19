@@ -96,14 +96,15 @@ Create the name of the service account to use
 Render the ingressRoute.defaultRoute match expression without route-specific path filters.
 */}}
 {{- define "relution.ingressRoute.defaultRouteMatch" -}}
-{{- $route := . -}}
+{{- $root := .root -}}
+{{- $route := .route -}}
 {{- if $route.match -}}
-{{ tpl $route.match $ }}
+{{ tpl $route.match $root }}
 {{- else if $route.hosts -}}
-Host(`{{ tpl (index $route.hosts 0) $ }}`)
-{{- range (slice $route.hosts 1) }} || Host(`{{ tpl . $ }}`)
+Host(`{{ tpl (index $route.hosts 0) $root }}`)
+{{- range (slice $route.hosts 1) }} || Host(`{{ tpl . $root }}`)
 {{- end -}}
 {{- else -}}
-Host(`{{ tpl $route.host $ }}`)
+Host(`{{ tpl $route.host $root }}`)
 {{- end -}}
 {{- end }}

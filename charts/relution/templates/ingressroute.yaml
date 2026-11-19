@@ -21,7 +21,7 @@ spec:
     {{- if $.Values.smg.enabled }}
     - kind: Rule
       {{- with .Values.ingressRoute.defaultRoute }}
-      match: "({{ include "relution.ingressRoute.defaultRouteMatch" . }}) && Path(`/Microsoft-Server-ActiveSync`)"
+      match: "({{ include "relution.ingressRoute.defaultRouteMatch" (dict "root" $ "route" .) }}) && Path(`/Microsoft-Server-ActiveSync`)"
       {{- end }}
       {{- if or .middlewares $securityHeadersEnabled }}
       middlewares:
@@ -36,7 +36,7 @@ spec:
     {{- with .Values.ingressRoute.defaultRoute }}
     {{- if .enabled }}
     - kind: Rule
-      match: {{ include "relution.ingressRoute.defaultRouteMatch" . | quote }}
+      match: {{ include "relution.ingressRoute.defaultRouteMatch" (dict "root" $ "route" .) | quote }}
       {{- if or .middlewares $securityHeadersEnabled }}
       middlewares:
         - name: {{ include "relution.fullname" $ }}-security-headers
@@ -54,7 +54,7 @@ spec:
           port: {{ $svcPort }}
     {{ if $.Values.managementIngressRoute.enabled }}
     - kind: Rule
-      match: "({{ include "relution.ingressRoute.defaultRouteMatch" . }}) && (PathPrefix(`/api/management/`) || Path(`/api/management`))"
+      match: "({{ include "relution.ingressRoute.defaultRouteMatch" (dict "root" $ "route" .) }}) && (PathPrefix(`/api/management/`) || Path(`/api/management`))"
       middlewares:
         - name: {{ include "relution.fullname" $ }}-block-access
         {{- if or .middlewares $securityHeadersEnabled }}

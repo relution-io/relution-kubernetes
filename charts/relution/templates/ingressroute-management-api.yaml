@@ -21,7 +21,7 @@ spec:
     {{- with .Values.managementIngressRoute.defaultRoute }}
     {{- if .enabled }}
     - kind: Rule
-      match: {{ include "relution.ingressRoute.defaultRouteMatch" . | quote }}
+      match: {{ include "relution.ingressRoute.defaultRouteMatch" (dict "root" $ "route" .) | quote }}
       {{- if or .middlewares $securityHeadersEnabled }}
       middlewares:
         - name: {{ include "relution.fullname" $ }}-security-headers
@@ -38,7 +38,7 @@ spec:
           namespace: {{ $.Release.Namespace }}
           port: {{ $svcPort }}
     - kind: Rule
-      match: "({{ include "relution.ingressRoute.defaultRouteMatch" . }}) && ((PathPrefix(`/api/`) && !(PathPrefix(`/api/management/`) || Path(`/api/management`))) || PathPrefix(`/e/`) || Path(`/e`) || PathPrefix(`/.well-known/com.apple.remotemanagement`) || PathPrefix(`/EnrollmentServer/`))"
+      match: "({{ include "relution.ingressRoute.defaultRouteMatch" (dict "root" $ "route" .) }}) && ((PathPrefix(`/api/`) && !(PathPrefix(`/api/management/`) || Path(`/api/management`))) || PathPrefix(`/e/`) || Path(`/e`) || PathPrefix(`/.well-known/com.apple.remotemanagement`) || PathPrefix(`/EnrollmentServer/`))"
       middlewares:
         - name: {{ include "relution.fullname" $ }}-block-access
         {{- if or .middlewares $securityHeadersEnabled }}
