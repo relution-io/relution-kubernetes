@@ -1,0 +1,9 @@
+{{- if .Values.securityHeaders.enabled -}}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ include "relution.fullname" . }}-security-headers
+spec:
+  headers:
+    stsSeconds: {{ .Values.securityHeaders.stsSeconds }}
+{{- end }}

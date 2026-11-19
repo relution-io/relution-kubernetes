@@ -75,6 +75,45 @@ ingressRoute:
       kind: ClusterIssuer
       name: ""
 
+managementIngressRoute:
+  enabled: false
+  className: ""
+  annotations: {}
+  entryPoints:
+    - web
+    - websecure
+  defaultRoute:
+    enabled: true
+    match: ""
+    host: ""
+    hosts: []
+    middlewares: []
+    #  - name: ""
+    #    namespace: ""
+  additionalRoutes: []
+  #  - kind: Rule
+  #    match: ""
+  #    middlewares: []
+  #    #  - name: ""
+  #    #    namespace: ""
+  tls:
+    enabled: false
+    generateCertificate: false
+    secretName: ""
+    certResolver: ""
+    domains: []
+    #  - main: ""
+    #    sans:
+    #      - ""
+    issuerRef:
+      kind: ClusterIssuer
+      name: ""
+  blockStatusCode: 404
+
+securityHeaders:
+  enabled: true
+  stsSeconds: 63072000
+
 startupProbe:
   enabled: true
   periodSeconds: 10
