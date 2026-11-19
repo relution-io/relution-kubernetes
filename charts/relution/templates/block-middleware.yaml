@@ -1,0 +1,14 @@
+{{- if .Values.managementIngressRoute.enabled -}}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ include "relution.fullname" . }}-block-access
+  labels:
+    {{- include "relution.labels" $ | nindent 4 }}
+spec:
+  ipAllowList:
+    sourceRange:
+      # invalid IP to block everything
+      - 255.255.255.255/32
+    rejectStatusCode: {{ .Values.managementIngressRoute.blockStatusCode | default 404 }}
+{{- end }}
