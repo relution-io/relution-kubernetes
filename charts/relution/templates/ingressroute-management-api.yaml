@@ -1,0 +1,91 @@
+{{- if .Values.managementIngressRoute.enabled -}}
+{{- $fullName := include "relution.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
+{{- $securityHeadersEnabled := .Values.securityHeaders.enabled -}}
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ $fullName }}-management
+  labels:
+    {{- include "relution.labels" . | nindent 4 }}
+  {{- with .Values.managementIngressRoute.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .Values.managementIngressRoute.className }}
+  ingressClassName: {{ . | quote }}
+  {{- end }}
+  entryPoints: {{ toYaml .Values.managementIngressRoute.entryPoints | nindent 4 }}
+  routes:
+    {{- with .Values.managementIngressRoute.defaultRoute }}
+    {{- if .enabled }}
+    - kind: Rule
+      match: {{ include "relution.ingressRoute.defaultRouteMatch" (dict "root" $ "route" .) | quote }}
+      {{- if or .middlewares $securityHeadersEnabled }}
+      middlewares:
+        - name: {{ include "relution.fullname" $ }}-security-headers
+      {{- with .middlewares }}
+      {{- range . }}
+        - name: {{ required "ingressRoute.defaultRoute.middlewares[*].name is required!" .name }}
+          namespace: {{ required "ingressRoute.defaultRoute.middlewares[*].namespace is required!" .namespace }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
+      services:
+        - kind: Service
+          name: {{ $fullName }}
+          namespace: {{ $.Release.Namespace }}
+          port: {{ $svcPort }}
+    - kind: Rule
+      match: "({{ include "relution.ingressRoute.defaultRouteMatch" (dict "root" $ "route" .) }}) && ((PathPrefix(`/api/`) && !(PathPrefix(`/api/management/`) || Path(`/api/management`))) || PathPrefix(`/e/`) || Path(`/e`) || PathPrefix(`/.well-known/com.apple.remotemanagement`) || PathPrefix(`/EnrollmentServer/`))"
+      middlewares:
+        - name: {{ include "relution.fullname" $ }}-block-access
+        {{- if or .middlewares $securityHeadersEnabled }}
+        - name: {{ include "relution.fullname" $ }}-security-headers
+        {{- end }}
+      services:
+        - kind: TraefikService
+          name: noop@internal
+    {{- end }}
+    {{- end }}
+    {{- range .Values.managementIngressRoute.additionalRoutes }}
+    - kind: {{ required "ingressRoute.additionalRoutes[*].kind is required!" .kind }}
+      match: "{{ tpl .match $ }}"
+      {{- if or .middlewares $securityHeadersEnabled }}
+      middlewares:
+        - name: {{ include "relution.fullname" $ }}-security-headers
+      {{- with .middlewares }}
+      {{- range . }}
+        - name: {{ required "ingressRoute.additionalRoutes[*].middlewares[*].name is required!" .name }}
+          namespace: {{ required "ingressRoute.additionalRoutes[*].middlewares[*].namespace is required!" .namespace }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
+      services:
+        - kind: Service
+          name: {{ $fullName }}
+          namespace: {{ $.Release.Namespace }}
+          port: {{ $svcPort }}
+    {{- end }}
+  {{- with .Values.managementIngressRoute.tls }}
+  {{- if .enabled }}
+  tls:
+    {{- if .secretName }}
+    secretName: {{ .secretName }}
+    {{- end }}
+    {{- if .certResolver }}
+    certResolver: {{ .certResolver }}
+    {{- end }}
+    {{- if .domains }}
+    domains:
+    {{- range .domains }}
+      - main: {{ required "ingressRoute.tls.domains[*].main is required!" .main }}
+        {{- with .sans }}
+        sans: {{ toYaml . | nindent 10 }}
+        {{- end }}
+    {{- end }}
+    {{- end }}
+  {{- end }}
+  {{- end }}
+{{- end }}

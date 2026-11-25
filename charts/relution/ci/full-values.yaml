@@ -46,6 +46,41 @@ ingressRoute:
       kind: ClusterIssuer
       name: "letsencrypt"
 
+managementIngressRoute:
+  enabled: true
+  annotations:
+    test: value
+  entryPoints:
+    - websecure
+  defaultRoute:
+    host: "admin.relution.io"
+    match: "Host(`admin.relution.io`) || Host(`admin-2.relution.io`)"
+    middlewares:
+      - name: admin
+        namespace: admin
+  additionalRoutes:
+    - kind: Rule
+      match: "Host(`{{ .Values.managementIngressRoute.defaultRoute.host }}`) && Path(`admin`)"
+      middlewares:
+        - name: admin
+          namespace: admin
+  tls:
+    enabled: true
+    generateCertificate: true
+    secretName: admin-relution-io
+    certResolver: default
+    domains:
+      - main: admin.relution.io
+        sans:
+          - admin-2.relution.io
+      - main: admin-3.relution.io
+        sans:
+          - admin-4.relution.io
+    issuerRef:
+      kind: ClusterIssuer
+      name: "letsencrypt"
+  blockStatusCode: 403
+
 relution:
   preRunScript: |
     #!/bin/bash

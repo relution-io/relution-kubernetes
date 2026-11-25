@@ -5,16 +5,18 @@ icon: https://relution.io/icons/icon-512x512.png
 maintainers:
   - name: niels-hb
     email: niels.heidbrink@mway.io
+  - name: taschenuhr
+    email: 29057942+taschenuhr@users.noreply.github.com
 sources:
   - https://relution.io
   - https://github.com/relution-io/relution-kubernetes
 
 type: application
 
-version: 3.7.0
+version: 3.8.0
 
 # renovate: image=relution/relution
-appVersion: "27.0.4"
+appVersion: "27.0.5"
 
 dependencies:
   - name: mariadb

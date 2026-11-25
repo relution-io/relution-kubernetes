@@ -96,8 +96,8 @@ Create the name of the service account to use
 Render the ingressRoute.defaultRoute match expression without route-specific path filters.
 */}}
 {{- define "relution.ingressRoute.defaultRouteMatch" -}}
-{{- $root := . -}}
-{{- $route := .Values.ingressRoute.defaultRoute -}}
+{{- $root := .root -}}
+{{- $route := .route -}}
 {{- if $route.match -}}
 {{ tpl $route.match $root }}
 {{- else if $route.hosts -}}
